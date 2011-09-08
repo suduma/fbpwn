@@ -74,11 +74,13 @@ public class DumpInfoTask extends FacebookTask {
             if (checkForCancel()) {
                 return true;
             }
+            // Saving the info page as html file
             PrintWriter infoWriterAsXML = new PrintWriter(new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "InfoPage.html"));
             infoWriterAsXML.print(infoPage.getElementById("contentArea").asXml());
             infoWriterAsXML.flush();
             infoWriterAsXML.close();
 
+            // Saving the info page as text file
             PrintWriter infoWriterAsText = new PrintWriter(new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "InfoPage.txt"));
             infoWriterAsText.print(infoPage.getElementById("contentArea").asText());
             infoWriterAsText.flush();
