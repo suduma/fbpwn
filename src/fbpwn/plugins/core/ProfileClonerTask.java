@@ -61,7 +61,7 @@ public class ProfileClonerTask extends FacebookTask {
     private Gender targetGender;
 
     /**
-     * Creates a new add friends task
+     * Creates a new profile cloner task
      * @param FacebookGUI The GUI used for updating the task's progress
      * @param facebookProfile The victim's profile
      * @param authenticatedProfile The attacker's profile
@@ -82,8 +82,9 @@ public class ProfileClonerTask extends FacebookTask {
             setMessage("Getting friend list");
             setPercentage(0.0);
             getFacebookGUI().updateTaskProgress(this);
+            // load friend list to be cloned of the victim profile
             final ArrayList<FacebookAccount> victimsFriendList = getFacebookTargetProfile().getFriends();
-
+            
             if (checkForCancel()) {
                 return true;
             }
@@ -118,6 +119,7 @@ public class ProfileClonerTask extends FacebookTask {
                 getFacebookGUI().updateTaskProgress(this);
                 return true;
             }
+            //gets the target clone name and profile picture
             targetFname = targetClone.getName().substring(0, targetClone.getName().indexOf(" "));
             targetLname = targetClone.getName().substring(targetClone.getName().indexOf(" ") + 1);
             String targetPicURL = targetClone.getProfilePhotoURL();
@@ -126,7 +128,7 @@ public class ProfileClonerTask extends FacebookTask {
             if (checkForCancel()) {
                 return true;
             }
-
+            //cloning name to match target clone's name
             setMessage("Cloning Name");
             getFacebookGUI().updateTaskProgress(this);
             HtmlPage settings = getAuthenticatedProfile().getBrowser().getPage("http://m.facebook.com/settings.php?name&refid=31");
@@ -152,7 +154,7 @@ public class ProfileClonerTask extends FacebookTask {
             if (checkForCancel()) {
                 return true;
             }
-
+            //cloning profile picture to match target clone profile picture
             setMessage("Cloning profile picture");
             setPercentage(30.0);
             getFacebookGUI().updateTaskProgress(this);
@@ -160,6 +162,7 @@ public class ProfileClonerTask extends FacebookTask {
             setMessage("Configuring info");
             setPercentage(70.0);
             getFacebookGUI().updateTaskProgress(this);
+            //determining target clone gender
             HtmlPage MobileInfopage = getAuthenticatedProfile().getBrowser().getPage(targetClone.getMobileInfoPageURL());
             if (MobileInfopage.asXml().contains("Male")) {
                 targetGender = Gender.Male;
@@ -169,19 +172,23 @@ public class ProfileClonerTask extends FacebookTask {
                 targetGender = Gender.Hidden;
             }
             HtmlPage basicInfoPage = getAuthenticatedProfile().getBrowser().getPage("http://www.facebook.com/editprofile.php?sk=basic");
+            //setting gender to match clone gender
             if (targetGender != Gender.Hidden) {
                 HtmlSelect genderSelect = (HtmlSelect) basicInfoPage.getElementById("sex");
                 HtmlOption sex = (targetGender == Gender.Male) ? genderSelect.getOptionByValue("2") : genderSelect.getOptionByValue("1");
                 genderSelect.setSelectedAttribute(sex, true);
             } else {
+                //hide gender if target clone is hiding his/her gender
                 HtmlCheckBoxInput hideGender = basicInfoPage.getForms().get(2).getInputByName("sex_visibility");
                 hideGender.click();
             }
+            //configuring info to hide birthday
             HtmlSelect birthday = (HtmlSelect) basicInfoPage.getElementById("birthday_visibility");
             HtmlOption birthdayVisibility = birthday.getOptionByValue("3");
             birthday.setSelectedAttribute(birthdayVisibility, true);
             HtmlSubmitInput saveChanges = basicInfoPage.getForms().get(2).getInputByValue("Save Changes");
             saveChanges.click();
+            //configuring info to hide email
             HtmlPage contactInfoPage = getAuthenticatedProfile().getBrowser().getPage("http://www.facebook.com/editprofile.php?sk=contact");
             HtmlSelect emailVisibility = contactInfoPage.getElementByName("audience[171521109592446][value]");
             HtmlOption hideEmail = emailVisibility.getOptionByValue("10");
@@ -194,6 +201,7 @@ public class ProfileClonerTask extends FacebookTask {
 
             setTaskState(FacebookTaskState.Finished);
             setPercentage(100.0);
+            //checks for successful name cloning
             if (returnPage.asXml().contains(targetFname)) {
                 setMessage("Cloned");
             } else {
@@ -214,7 +222,9 @@ public class ProfileClonerTask extends FacebookTask {
     @Override
     public void init() {
     }
-
+    /**
+     * Upload image then sets it as profile picture
+     */
     private void uploadImage() throws IOException {
 
         File tempImgFile = new File("temp.jpg");
