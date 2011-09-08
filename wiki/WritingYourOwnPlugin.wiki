@@ -13,7 +13,7 @@ FBPwn uses Java reflection API to load custom plugins at startup, so with basic 
   * Any additional needed GUI components should be placed in the following package: `fbpwn.plugins.ui`
   * Your plugin should:
    * Extend `FacebookTask` class
-   * Provide a suitable constructor as indicated below in the [!SamplePlugin#SamplePlugin].
+   * Provide a suitable constructor as indicated below in the [#SamplePlugin !SamplePlugin].
    * Override `public void init()` and place any initialization needed when placing the plugin in the execution queue.
    * Override `public boolean run()` and place your logic here. This method should return false to be retried again by the execution queue, and return true to indicate the end of execution. You'll also need to check for the cancel flag, and report the status of the plugin while executing.
    * Override `public String toString()` and provide the name of the plugin that will appear in the execution queue.
