@@ -79,6 +79,7 @@ public class DumpInfoTask extends FacebookTask {
             infoWriterAsXML.print(infoPage.getElementById("contentArea").asXml());
             infoWriterAsXML.flush();
             infoWriterAsXML.close();
+            setPercentage(50.0);
 
             // Saving the info page as text file
             PrintWriter infoWriterAsText = new PrintWriter(new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "InfoPage.txt"));
@@ -90,6 +91,8 @@ public class DumpInfoTask extends FacebookTask {
             Logger.getLogger(DumpInfoTask.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+        
+        //Updating the GUI
         setTaskState(FacebookTaskState.Finished);
         setMessage("Finished");
         setPercentage(100.0);
