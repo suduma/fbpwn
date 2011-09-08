@@ -47,7 +47,7 @@ public class SamplePlugin extends FacebookTask {
     @Override
     public void init() {
         // Put your intialization here
-        // Will be called once the plugin is inserted in the task queue
+        // Will be called once the plugin is inserted in the execution queue
         // This method is called from the event-dispatcher thread
         // You can add additional forms and dialogs to recieve more input
         // from the user.
@@ -74,7 +74,7 @@ public class SamplePlugin extends FacebookTask {
             } catch (InterruptedException ex) {
             }
 
-            // Check for cancel signal
+            // Check the cancel flag
             if (checkForCancel()) {
                 return true;
             }
