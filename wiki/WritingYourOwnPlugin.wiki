@@ -20,7 +20,7 @@ FBPwn uses Java reflection API to load custom plugins at startup, so with basic 
   * After compiling and building your plugin, you should move the .class files beside the jar file inside their appropriate directories.
   * Don't forget to tell us about your plugin through the [http://groups.google.com/group/fbpwn-dev discussion group], we'll include it in the next release.
 
- = !SamplePlugin =
+= !SamplePlugin =
 {{{
 
 package fbpwn.plugins.core;
