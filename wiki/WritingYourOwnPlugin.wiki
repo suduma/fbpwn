@@ -6,7 +6,7 @@ The following steps are needed to create your own custom FBPwn plugin
 
 = Details =
 
-FBPwn uses Java reflection API to load custom plugins at startup, so with basic knoweledge about Java, you can make your own plugins.
+FBPwn uses Java reflection API to load custom plugins at startup, so with basic knowledge about Java, you can make your own plugins.
 
   * You'll need to download the latest jar executable file, and include it in your classpath while compiling and building your plugin, alternatively you can checkout the latest code and include it in your project along with the necessary libraries.
   * Your plugin should be placed in the following package: `fbpwn.plugins.core`
