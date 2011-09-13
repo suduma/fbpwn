@@ -84,8 +84,7 @@ public class FacebookManager {
      */
     public AuthenticatedAccount logIn(String userEmail, String userPassword) throws IOException, FacebookException {
 
-        //WebClient webClient = new WebClient(browsers[rand.nextInt(5)]);
-        WebClient webClient = new WebClient(browsers[2]);
+        WebClient webClient = new WebClient(browsers[rand.nextInt(5)]);
         webClient.setCssEnabled(false);
         webClient.setJavaScriptEnabled(false);
         HtmlPage loginPage = webClient.getPage("http://www.facebook.com");
