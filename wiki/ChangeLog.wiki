@@ -17,7 +17,7 @@ Latest version: <Beta - 0.1.5>
 
 +Added a new module !WallDumper fixing issue 11
 
-+Fixed issue 12 where an exception was thrown if the victim is hiding their friend list
++Fixed issue 12 where an exception was thrown if the victim is hiding his/her friend list
 
 ----
 
