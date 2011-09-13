@@ -7,6 +7,8 @@ Change log:
 
 Beta - 0.1.4:
 
-* Fixed issue as Facebook changed the design of the info page
-* Profile cloner is now more resistent to changes in the info page
-(fix made by Shafiey)
++Fixed issue as Facebook changed the design of the info page
+
++Profile cloner is now more resistent to changes in the info page(fix made by Shafiey)
+
+----
