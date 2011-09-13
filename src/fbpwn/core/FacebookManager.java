@@ -53,7 +53,7 @@ public class FacebookManager {
     private ArrayList<Class<?>> allClasses = new ArrayList<Class<?>>();
     private BrowserVersion[] browsers = new BrowserVersion[]{BrowserVersion.FIREFOX_3,
         BrowserVersion.FIREFOX_3_6,
-        BrowserVersion.INTERNET_EXPLORER_6,
+        //BrowserVersion.INTERNET_EXPLORER_6, //Causing troubles !
         BrowserVersion.INTERNET_EXPLORER_7,
         BrowserVersion.INTERNET_EXPLORER_8};
     private Random rand = new Random(System.currentTimeMillis());
@@ -84,10 +84,22 @@ public class FacebookManager {
      */
     public AuthenticatedAccount logIn(String userEmail, String userPassword) throws IOException, FacebookException {
 
-        WebClient webClient = new WebClient(browsers[rand.nextInt(5)]);
+        WebClient webClient = null;
+        if (SettingsManager.useProxy()) {
+            webClient = new WebClient(browsers[rand.nextInt(browsers.length)],
+                    SettingsManager.getProxyHost(),
+                    Integer.parseInt(SettingsManager.getProxyPort()));
+
+        } else {
+            webClient = new WebClient(browsers[rand.nextInt(browsers.length)]);
+        }
         webClient.setCssEnabled(false);
         webClient.setJavaScriptEnabled(false);
         HtmlPage loginPage = webClient.getPage("http://www.facebook.com");
+        if(loginPage.getForms().isEmpty())
+        {
+            throw new IOException();
+        }
         HtmlForm loginForm = loginPage.getForms().get(0);
         HtmlSubmitInput button = (HtmlSubmitInput) loginForm.getInputsByValue("Log In").get(0);
         HtmlTextInput textField = loginForm.getInputByName("email");
@@ -228,7 +240,7 @@ public class FacebookManager {
                 try {
                     myclass = urlclassloader.loadClass("fbpwn.plugins.core." + allFiles[i].getName().
                             substring(0, allFiles[i].getName().indexOf('.')));
-                   
+
                 } catch (ClassNotFoundException ex) {
                     continue;
                 }

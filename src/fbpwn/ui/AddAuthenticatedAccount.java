@@ -27,6 +27,7 @@ import fbpwn.core.FacebookManager;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,11 +81,6 @@ public class AddAuthenticatedAccount extends javax.swing.JDialog {
         jTextField1.setNextFocusableComponent(jTextField2);
 
         jTextField2.setNextFocusableComponent(jButton1);
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
 
         jButton1.setText("Login");
         jButton1.setNextFocusableComponent(jButton2);
@@ -193,20 +189,16 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     loadingDialog.setVisible(true);
     try {
         authenticatedProfile = (AuthenticatedAccount) backgrn.get();
-
     } catch (InterruptedException ex) {
         Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, null, ex);
     } catch (ExecutionException ex) {
         Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, null, ex);
     }
+
     this.authenticatedAccount = authenticatedProfile;
+
     dispose();
 }//GEN-LAST:event_jButton1ActionPerformed
-
-private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-// TODO add your handling code here:
-}//GEN-LAST:event_jTextField2ActionPerformed
-
     /**
      * Shows a dialog to ask for details for an authenticated account.
      *   * The dialog also tries to login to this authenticated account

@@ -184,8 +184,6 @@ public class FacebookAccount {
 
         HtmlPage friendsPage = getBrowser().getPage(page);
         while (true) {
-
-
             HtmlElement friends = friendsPage.getElementById("rootContent");
             int index = 0;
 
@@ -208,12 +206,17 @@ public class FacebookAccount {
                 newAccount.setName(validHrefs.get(i).getAttribute("name"));
                 friendsList.add(newAccount);
             }
-            if (!friendsPage.asXml().contains("See More")) {
-                break;
-            } else {
+            try {
                 friendsPage = friendsPage.getAnchorByText("See More Friends").click();
+            } catch (Exception ex) {
+                break;
             }
         }
+        
+        if(friendsList.size() == 0 ) {
+            return null;
+        }
+        
         return friendsList;
     }
 
