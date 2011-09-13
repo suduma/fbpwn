@@ -105,7 +105,7 @@ public class AddVictimsFriends extends FacebookTask {
             }
 
             if (choosenFriends.size() != 0) {
-                setMessage("Sending Request to " + choosenFriends.size() + " profile");
+                setMessage("Sending Request to " + choosenFriends.size() + " profile(s)");
                 for (int i = 0; i < choosenFriends.size(); i++) {
                     if (checkForCancel()) {
                         return true;

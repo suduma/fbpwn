@@ -22,7 +22,13 @@ package fbpwn;
 
 import fbpwn.core.FacebookManager;
 import fbpwn.ui.MainForm;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
@@ -37,12 +43,13 @@ import org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel;
  */
 public class FBPwn {
 
+    public static final String appVersion = "Beta - 0.1.5";
+
     /**
      * Runs the application using the default Swing GUI
      * @param args command line arguments
      */
     public static void main(String[] args) {
-
         try {
             FacebookManager.getInstance();
 
@@ -70,5 +77,25 @@ public class FBPwn {
         } catch (InvocationTargetException ex) {
             Logger.getLogger(FBPwn.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static String getUpdates() throws MalformedURLException, IOException {
+        URL changeLog = new URL("http://fbpwn.googlecode.com/svn/wiki/ChangeLog.wiki");
+        URLConnection connection = changeLog.openConnection();
+        BufferedReader in =
+                new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+
+        String line;
+        String page = "";
+
+        while ((line = in.readLine()) != null) {
+            if(line.startsWith("#")) {
+                continue;
+            }
+            page += line + "\n";
+        }
+        in.close();
+        return page;
     }
 }

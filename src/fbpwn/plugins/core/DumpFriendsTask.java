@@ -76,6 +76,15 @@ public class DumpFriendsTask extends FacebookTask {
                 return true;
             }
             
+            if (allfriends == null) {
+                setMessage("Failed to get friend list");
+                setPercentage(0.0);
+                setTaskState(FacebookTaskState.Finished);
+                getFacebookGUI().updateTaskProgress(this);
+                return true;
+            }
+            
+            
             // Saving the friends' name and image list in an html file
             PrintWriter friendsWriter = new PrintWriter(new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "Friends.html"));
             setMessage("Dumping friend list");
