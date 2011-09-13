@@ -1,11 +1,27 @@
 #labels Featured
-Latest version: <Beta - 0.1.4>
+= Change log =
+
+Latest version: <Beta - 0.1.5>
 
 ----
 
-Change log:
+*Beta - 0.1.5*
 
-Beta - 0.1.4:
++Added "check for update" dialog
+
++Added "about" dialog
+
++Added links to Twitter and tumblr pages
+
++Added options to connect through proxy
+
++Added a new module !WallDumper fixing issue 11
+
++Fixed issue 12 where an exception was thrown if the victim is hiding their friend list
+
+----
+
+*Beta - 0.1.4*
 
 +Fixed issue as Facebook changed the design of the info page
 
