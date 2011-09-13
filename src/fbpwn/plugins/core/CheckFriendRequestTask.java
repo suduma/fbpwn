@@ -1,7 +1,7 @@
 /*
  * FBPwn
  * 
- * http://sourceforge.net/projects/fbpwn/
+ * http://code.google.com/p/fbpwn
  * 
  * Copyright (C) 2011 - FBPwn
  * This program is free software: you can redistribute it and/or modify

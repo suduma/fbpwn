@@ -1,7 +1,7 @@
 /*
  * FBPwn
  * 
- * http://sourceforge.net/projects/fbpwn/
+ * http://code.google.com/p/fbpwn
  * 
  * Copyright (C) 2011 - FBPwn
  * 
@@ -98,6 +98,7 @@ public class FacebookAccount {
                 albumsURLs.add(Hrfs.get(i).getHrefAttribute());
             }
         }
+        if(albumsURLs.size() == 0) return albumsURLs;
         albumsURLs.remove(0);
         return albumsURLs;
     }
