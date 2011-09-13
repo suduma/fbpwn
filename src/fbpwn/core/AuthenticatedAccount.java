@@ -111,7 +111,15 @@ public class AuthenticatedAccount extends FacebookAccount {
     public String getAccountID() {
         return accoundID;
     }
-
+    
+    /**
+     * Gets the password associated with this authenticated account
+     * @return String representing the pasword used for this authenticated account
+     */
+    public String getPassword() {
+        return password;
+    }
+    
     @Override
     public String toString() {
         return accountEmail;
