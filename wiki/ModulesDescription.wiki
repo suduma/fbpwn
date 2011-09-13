@@ -16,3 +16,5 @@ FBPwn modules are:
 - !DumpImages: Accessable images (tagged and albums) are saved for offline viewing. Same limitations of dump friends applies.
 
 - !DumpInfo: Accessable basic info are saved for offline viewing. Same limitations of dump friends applies.
+
+- !DumpWall: Dumps wall posts for offline viewing. Same limitations of dump friends applies.
