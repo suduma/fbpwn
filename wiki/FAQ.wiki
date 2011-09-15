@@ -1,6 +1,10 @@
 #labels Featured
 These are some common questions that we get:
 
+==Why did you put the project code online?==
+Read [http://fbpwn.tumblr.com/post/10171402996/fbpwn-release-motivation here] about the project release motivation.
+
+
 ==Why do I get "Error Occurred" when I try to login using FBPwn?==
 
 Probably because you are not using the English version of Facebook. Currently, FBPwn only works if you have your language set to English.
