@@ -9,7 +9,7 @@ Read [http://fbpwn.tumblr.com/post/10171402996/fbpwn-release-motivation here] ab
 
 Probably because you are not using the English version of Facebook. Currently, FBPwn only works if you have your language is set to English.
 
-==What do I do to prevent people from using this tool on my account?==
+==How do I prevent people from using this tool on my account?==
 
 You only have to follow the basic guid lines for Facebook privacy and security:
   * Do not accept friend requests from people even if you know them before manually verifying that they are who they claim to be; either by asking them questions that no one knows its answer other than them, or by contacting them via other means (phone, email, ...etc).
