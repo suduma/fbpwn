@@ -1,0 +1,6 @@
+#labels Featured
+These are some common questions that we get:
+
+==Why do I get "Error Occurred" when I try to login using FBPwn?==
+
+Probably because you are not using the English version of Facebook. Currently, FBPwn only works if you have your language set to English.
