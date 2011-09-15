@@ -187,7 +187,20 @@ public class ProfileClonerTask extends FacebookTask {
             HtmlSelect birthday = (HtmlSelect) basicInfoPage.getElementById("birthday_visibility");
             HtmlOption birthdayVisibility = birthday.getOptionByValue("3");
             birthday.setSelectedAttribute(birthdayVisibility, true);
-            HtmlSubmitInput saveChanges = basicInfoPage.getForms().get(2).getInputByValue("Save Changes");
+                        
+            HtmlSubmitInput saveChanges = null;
+            
+            List<HtmlElement> elementsByName = basicInfoPage.getElementsByTagName("input");
+            
+            for(HtmlElement e : elementsByName)
+            {
+                if(e.asText().equals("Save Changes"))
+                {
+                    saveChanges = (HtmlSubmitInput) e;
+                }
+            }
+            
+            
             saveChanges.click();
             //hide fake account email info
             HtmlPage contactInfoPage = getAuthenticatedProfile().getBrowser().getPage("http://www.facebook.com/editprofile.php?sk=contact");
@@ -199,7 +212,17 @@ public class ProfileClonerTask extends FacebookTask {
                     emailVisibility.setSelectedAttribute(hideEmail, true);
                 }
             }
-            saveChanges = contactInfoPage.getForms().get(2).getInputByValue("Save Changes");
+            
+            elementsByName = basicInfoPage.getElementsByTagName("input");
+            
+            for(HtmlElement e : elementsByName)
+            {
+                if(e.asText().equals("Save Changes"))
+                {
+                    saveChanges = (HtmlSubmitInput) e;
+                }
+            }
+                        
             saveChanges.click();
             if (checkForCancel()) {
                 return true;
