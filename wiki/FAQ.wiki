@@ -7,7 +7,7 @@ Read [http://fbpwn.tumblr.com/post/10171402996/fbpwn-release-motivation here] ab
 
 ==Why do I get "Error Occurred" when I try to login using FBPwn?==
 
-Probably because you are not using the English version of Facebook. Currently, FBPwn only works if you have your language set to English.
+Probably because you are not using the English version of Facebook. Currently, FBPwn only works if you have your language is set to English.
 
 ==What do I do to prevent people from using this tool on my account?==
 
