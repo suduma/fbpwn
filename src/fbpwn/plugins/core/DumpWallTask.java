@@ -88,7 +88,7 @@ public class DumpWallTask extends FacebookTask {
                     return true;
                 }
                 //dumping wall pages
-                PrintWriter wallWriter = new PrintWriter(new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "Wall.html"));
+                PrintWriter wallWriter = new PrintWriter(new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "Wall.html"), "UTF-8");
                 setMessage("Dumping Wall posts");
                 setPercentage(0.0);
                 getFacebookGUI().updateTaskProgress(this);
