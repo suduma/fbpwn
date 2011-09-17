@@ -20,7 +20,10 @@
  */
 package fbpwn.plugins.core;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import fbpwn.core.AuthenticatedAccount;
 import fbpwn.core.FacebookAccount;
@@ -28,14 +31,15 @@ import fbpwn.ui.FacebookGUI;
 import fbpwn.core.FacebookTask;
 import fbpwn.core.FacebookTaskState;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -64,63 +68,144 @@ public class DumpImagesTask extends FacebookTask {
     public void init() {
     }
 
-    private void processPhotos(HtmlPage PhotosPage, String FileDirectory, String Process) throws IOException {
-        List<HtmlAnchor> hrfs = PhotosPage.getAnchors();
-        ArrayList<String> images = new ArrayList<String>();
-        for (int i = 0; i < hrfs.size(); i++) {
-            if (hrfs.get(i).getHrefAttribute().contains("fbid=") && !hrfs.get(i).getHrefAttribute().contains("ajax") && !images.contains(hrfs.get(i).getHrefAttribute())) {
-                images.add(hrfs.get(i).getHrefAttribute());
-            }
-        }
-        for (int i = 0; i < images.size(); i++) {
-            if (checkForCancel()) {
-                return;
-            }
-
-            HtmlPage Picture = getAuthenticatedProfile().getBrowser().getPage(images.get(i));
-            Pattern imageSRC = Pattern.compile("http:.*_n.jpg");
-            Matcher Match = imageSRC.matcher(Picture.asXml());
-            if (Match.find() && !Match.group().contains("\\")) {
-                FileUtils.copyURLToFile(new URL(Match.group()), new File(FileDirectory + System.getProperty("file.separator") + "Image" + (i + 1) + ".jpg"));
-            }
-            setMessage(Process);
-            setPercentage(((double) (i + 1) / images.size()) * 100);
-            getFacebookGUI().updateTaskProgress(this);
-        }
-    }
-
     /**
      * Runs this task
      * @return true if completed, false if error occurred so that it will be rerun after a small delay.
      */
     @Override
     public boolean run() {
+        setTaskState(FacebookTaskState.Running);
+        setMessage("Getting Album List");
+        getFacebookGUI().updateTaskProgress(this);
+        ArrayList<String> albumsURL = new ArrayList<String>();
         try {
-            setTaskState(FacebookTaskState.Running);
-            getFacebookGUI().updateTaskProgress(this);
-
-            HtmlPage taggedPhotosPage = getFacebookTargetProfile().getBrowser().getPage(getFacebookTargetProfile().getTaggedPhotosURL());
-            processPhotos(taggedPhotosPage, getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "TaggedPhotos", "Dumping tagged photos");
-            ArrayList<String> albumsURLs = getFacebookTargetProfile().getAlbumsURLs();
-            for (int i = 0; i < albumsURLs.size(); i++) {
-                processPhotos((HtmlPage) getFacebookTargetProfile().getBrowser().getPage(albumsURLs.get(i)), getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "Album" + (i + 1), "Dumping Album" + (i + 1) + "/" + albumsURLs.size());
-                if (checkForCancel()) {
+            //Opening Mobile photo page of victime profile
+            HtmlPage photosPage = getAuthenticatedProfile().getBrowser().getPage(getFacebookTargetProfile().getTaggedPhotosURL().replace("www", "m").replace("sk", "v"));
+            while (true) {
+                //Extracting Album links
+                List<HtmlAnchor> anchors = photosPage.getAnchors();
+                for (int i = 0; i < anchors.size(); i++) {
+                    if (anchors.get(i).getHrefAttribute().contains("/media/set")) {
+                        albumsURL.add("http://m.facebook.com" + anchors.get(i).getHrefAttribute());
+                    }
+                }
+                //checking for Additional album pages
+                try {
+                    photosPage = getAuthenticatedProfile().getBrowser().getPage("http://m.facebook.com" + photosPage.getElementById("m_more_item").getElementsByTagName("a").get(0).getAttribute("href"));
+                } catch (Exception ex) {
+                    break;
+                }
+                
+                if(checkForCancel()){
                     return true;
                 }
             }
+            //dumping images and comments on each Album
+            for (int i = 0; i < albumsURL.size(); i++) {
+                setMessage("Dumping Albums " + (i + 1) + "/" + albumsURL.size());
+                getFacebookGUI().updateTaskProgress(this);
+                HtmlPage album = getAuthenticatedProfile().getBrowser().getPage(albumsURL.get(i));
+                processAlbum(album, i + 1);
+                
+                if(checkForCancel()){
+                    return true;
+                }
+            }
+            setMessage((albumsURL.isEmpty())?"No Albums or Albums are not accesible":"Finished");
+            setTaskState(FacebookTaskState.Finished);
+            setPercentage(100.0);
+            getFacebookGUI().updateTaskProgress(this);
         } catch (IOException ex) {
-            Logger.getLogger(DumpImagesTask.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+            Logger.getLogger(DumpAlbums.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FailingHttpStatusCodeException ex) {
+            Logger.getLogger(DumpAlbums.class.getName()).log(Level.SEVERE, null, ex);
         }
-        setTaskState(FacebookTaskState.Finished);
-        setMessage("Finished");
-        setPercentage(100.0);
-        getFacebookGUI().updateTaskProgress(this);
         return true;
     }
-
+    
+    
+    /**
+     * Dump Album Images with Comments
+     * @param albumPage Mobile album page containing Images with comments
+     * @param albumIndex Album index that identify it's folder
+     */
+    private void processAlbum(HtmlPage albumPage, int albumIndex) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        ArrayList<String> photos = new ArrayList<String>();  //Array of Images links
+        DomNodeList<HtmlElement> anchors;  //All anchors in album page
+        while (true) {
+            // Extracting images links
+            HtmlElement body = albumPage.getElementById("body");
+            anchors = body.getElementsByTagName("a");
+            for (int j = 0; j < anchors.size(); j++) {
+                if (anchors.get(j).getAttribute("href").contains("fbid")) {
+                    photos.add("http://m.facebook.com" + anchors.get(j).getAttribute("href"));
+                }
+            }
+            //checking for Additional images in this album
+            try {
+                albumPage = getAuthenticatedProfile().getBrowser().getPage("http://m.facebook.com" + albumPage.getElementById("m_more_item").getElementsByTagName("a").get(0).getAttribute("href"));
+            } catch (Exception ex) {
+                break;
+            }
+            
+            if(checkForCancel()){
+                return;
+            }
+        }
+        //dumping Images with comments
+        for (int j = 0; j < photos.size(); j++) {
+            //opening Image Page that containg it's comments
+            HtmlPage photoPage = getAuthenticatedProfile().getBrowser().getPage(photos.get(j));
+            //writing image to file
+            FileUtils.copyURLToFile(new URL(photoPage.getElementsByTagName("img").get(1).getAttribute("src")), new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "Album-" + albumIndex + System.getProperty("file.separator") + "Image-" + (j + 1) + ".jpg"));
+            //Initializing html file to look like facebook interface
+            PrintWriter commentWriter = new PrintWriter(new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "Album-" + albumIndex + System.getProperty("file.separator") + "Comments-on-Image-" + (j + 1) + ".html"), "UTF-8");
+            commentWriter.println("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            commentWriter.println("<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.0//EN\" \"http://www.wapforum.org/DTD/xhtml-mobile10.dtd\">");
+            commentWriter.println(albumPage.getElementsByTagName("head").get(0).asXml());
+            //checking for previous comments on this image
+            try{
+                //dumping previous comments
+                dumpComments((HtmlPage)getAuthenticatedProfile().getBrowser().getPage("http://m.facebook.com"+photoPage.getElementById("see_prev").getElementsByTagName("a").get(0).getAttribute("href")), commentWriter);
+            }
+            catch (Exception ex){
+            }
+            //dumping latest comments
+            dumpComments(photoPage, commentWriter);
+            commentWriter.flush();
+            commentWriter.close();
+            setPercentage((double) (j + 1) / photos.size() * 100);
+            getFacebookGUI().updateTaskProgress(this);
+            
+            if(checkForCancel()){
+                return;
+            }
+        }
+        
+        //dumping Album name in text file
+        PrintWriter nameWriter = new PrintWriter(new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "Album-" + albumIndex + System.getProperty("file.separator") + "Album Name.txt"), "UTF-8");
+        nameWriter.println(albumPage.getTitleText());
+        nameWriter.flush();
+        nameWriter.close();
+    }
+    
+    /**
+     * Dump comments on Album images
+     * @param photoPage Mobile photo page containing comments
+     * @param commentWriter Writer used to dump comments
+     */
+    private void dumpComments(HtmlPage photoPage, PrintWriter commentWriter){
+        DomNodeList<HtmlElement> divisions = photoPage.getElementsByTagName("div");
+        for (int i = 0; i < divisions.size(); i++) {
+            if (divisions.get(i).getAttribute("class").equals("ufi")) {
+                commentWriter.println(divisions.get(i).asXml());
+                break;
+            }
+        }
+    }
+    
     @Override
     public String toString() {
-        return "Dump all photos";
+        return "Dump Album's photos with comments";
     }
 }
