@@ -86,7 +86,7 @@ public class DumpFriendsTask extends FacebookTask {
             
             
             // Saving the friends' name and image list in an html file
-            PrintWriter friendsWriter = new PrintWriter(new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "Friends.html"));
+            PrintWriter friendsWriter = new PrintWriter(new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "Friends.html"), "UTF-8");
             setMessage("Dumping friend list");
             setPercentage(0.0);
             getFacebookGUI().updateTaskProgress(this);
