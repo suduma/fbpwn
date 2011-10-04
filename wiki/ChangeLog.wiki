@@ -1,7 +1,27 @@
 #labels Featured
 = Change log =
 
-Latest version: <Beta - 0.1.5>
+Latest version: <Beta - 0.1.6>
+
+----
+
+*Beta - 0.1.6*
+
++Fixed issue 18, album names and comments under each photo are now dumped.
+
++Fixed issue 19, profile cloner is now working correctly.
+
++Fixed issue 25, where FBPwn failed to login. FBPwn can now login flawlessly.
+
++Fixed problems with the friending plugin.
+
++Added logging functionality for debugging.
+
++Added a new menu item to view the log file.
+
++Improved exception handling for both caught and uncaught exceptions.
+
++Improved the login procedure, it is much faster now.
 
 ----
 
