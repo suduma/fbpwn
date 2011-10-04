@@ -58,7 +58,7 @@ public class SamplePlugin extends FacebookTask {
         // Do Logic here and update status accordingly
         // Will be called when the plugin gets scheduled
 
-        Logger.getLogger(SamplePlugin.class.getName()).log(Level.INFO, "Debug information to be included in the log file"); 
+        Logger.getLogger(SamplePlugin.class.getName()).log(Level.INFO, "Debug information"); 
 
         setTaskState(FacebookTaskState.Running);
         setMessage("Processing...");
