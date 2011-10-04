@@ -83,15 +83,17 @@ public class AuthenticatedAccount extends FacebookAccount {
     public RequestState getFriendRequestState(String profileURL) throws IOException {
         HtmlPage friendProfilePage = super.getBrowser().getPage(profileURL);
         //Friend Request was sent and Declined
-        if (friendProfilePage.asText().contains("Add Friend") && !friendProfilePage.asText().contains("Cancel Friend Request")) {
-            return RequestState.RequestDeclined;
-            //Friend Request is still pending
-        } else if (friendProfilePage.asText().contains("Cancel Friend Request")) {
+        if (friendProfilePage.asXml().contains("Friend Request Sent")) {
             return RequestState.RequestPending;
             //Friend Request Accepted, Start Dumping Info
-        } else if (friendProfilePage.asText().contains("Unfriend")) {
+        } else
+        if (friendProfilePage.asXml().contains("navItem_friends")) {
             return RequestState.RequestAccepted;
-        } else {
+        } else
+        if (friendProfilePage.asXml().contains("Add Friend") && !friendProfilePage.asXml().contains("Cancel Friend Request")) {
+            return RequestState.RequestDeclined;
+            //Friend Request is still pending
+        }  else {
             return RequestState.ErrorOccured;
         }
     }

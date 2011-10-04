@@ -73,7 +73,7 @@ public class CheckFriendRequestTask extends FacebookTask {
             try {
                 getAuthenticatedProfile().sendFriendRequest(getFacebookTargetProfile().getProfilePageURL());
             } catch (FacebookException ex) {
-                Logger.getLogger(CheckFriendRequestTask.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CheckFriendRequestTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
                 return false;
             }
 
@@ -90,13 +90,13 @@ public class CheckFriendRequestTask extends FacebookTask {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(CheckFriendRequestTask.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CheckFriendRequestTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
                 }
             }
             setPercentage(100.0);
             getFacebookGUI().updateTaskProgress(this);
         } catch (IOException ex) {
-            Logger.getLogger(CheckFriendRequestTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CheckFriendRequestTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             return false;
         }
         setPercentage(100.0);

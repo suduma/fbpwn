@@ -107,9 +107,9 @@ public class ProfileClonerTask extends FacebookTask {
                     }
                 });
             } catch (InterruptedException ex) {
-                Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             } catch (InvocationTargetException ex) {
-                Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             }
             if (targetClone == null) {
                 setTaskState(FacebookTaskState.Finished);
@@ -239,10 +239,10 @@ public class ProfileClonerTask extends FacebookTask {
             getFacebookGUI().updateTaskProgress(this);
             return true;
         } catch (IOException ex) {
-            Logger.getLogger(ProfileClonerTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProfileClonerTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             return false;
         } catch (FailingHttpStatusCodeException ex) {
-            Logger.getLogger(ProfileClonerTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProfileClonerTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             return false;
         }
 

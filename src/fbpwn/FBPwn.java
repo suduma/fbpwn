@@ -20,7 +20,9 @@
  */
 package fbpwn;
 
+import fbpwn.core.ExceptionHandler;
 import fbpwn.core.FacebookManager;
+import fbpwn.core.LogManager;
 import fbpwn.ui.MainForm;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -43,21 +46,30 @@ import org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel;
  */
 public class FBPwn {
 
-    public static final String appVersion = "Beta - 0.1.5";
+    public static final String appVersion = "Beta - 0.1.6";
 
     /**
      * Runs the application using the default Swing GUI
      * @param args command line arguments
      */
     public static void main(String[] args) {
+
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
+        Thread.currentThread().setName("Main thread");
+
         try {
+            LogManager.init();
+            
+            Logger.getLogger(FBPwn.class.getName()).log(Level.INFO, "FBPwn started !");
+            Logger.getLogger(FBPwn.class.getName()).log(Level.INFO, "Application version: " + appVersion);
+
             FacebookManager.getInstance();
 
             SwingUtilities.invokeAndWait(new Runnable() {
 
                 @Override
                 public void run() {
-                    try {
+                    try {                                                
                         UIManager.setLookAndFeel(new SubstanceNebulaLookAndFeel());
                         JFrame.setDefaultLookAndFeelDecorated(true);
                         JDialog.setDefaultLookAndFeelDecorated(true);
@@ -68,18 +80,26 @@ public class FBPwn {
                         mainForm.setVisible(true);
 
                     } catch (UnsupportedLookAndFeelException ex) {
-                        Logger.getLogger(FBPwn.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(FBPwn.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
                     }
                 }
             });
         } catch (InterruptedException ex) {
-            Logger.getLogger(FBPwn.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FBPwn.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
         } catch (InvocationTargetException ex) {
-            Logger.getLogger(FBPwn.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FBPwn.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Failed to create log.html file\nFBPwn will now exit",
+                    "Error occurred",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public static String getUpdates() throws MalformedURLException, IOException {
+        
+        Logger.getLogger(FBPwn.class.getName()).log(Level.INFO, "Getting updates");
+        
         URL changeLog = new URL("http://fbpwn.googlecode.com/svn/wiki/ChangeLog.wiki");
         URLConnection connection = changeLog.openConnection();
         BufferedReader in =
@@ -90,7 +110,7 @@ public class FBPwn {
         String page = "";
 
         while ((line = in.readLine()) != null) {
-            if(line.startsWith("#")) {
+            if (line.startsWith("#")) {
                 continue;
             }
             page += line + "\n";

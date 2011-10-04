@@ -20,9 +20,11 @@
  */
 package fbpwn.core;
 
+import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import fbpwn.ui.FacebookGUI;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -84,20 +86,24 @@ public class FacebookManager {
      */
     public AuthenticatedAccount logIn(String userEmail, String userPassword) throws IOException, FacebookException {
 
+        Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Trying to login");
+
         WebClient webClient = null;
         if (SettingsManager.useProxy()) {
             webClient = new WebClient(browsers[rand.nextInt(browsers.length)],
                     SettingsManager.getProxyHost(),
                     Integer.parseInt(SettingsManager.getProxyPort()));
-
+            ;
         } else {
             webClient = new WebClient(browsers[rand.nextInt(browsers.length)]);
         }
+
+        Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Using " + webClient.getBrowserVersion().getUserAgent());
+
         webClient.setCssEnabled(false);
         webClient.setJavaScriptEnabled(false);
         HtmlPage loginPage = webClient.getPage("http://www.facebook.com");
-        if(loginPage.getForms().isEmpty())
-        {
+        if (loginPage.getForms().isEmpty()) {
             throw new IOException();
         }
         HtmlForm loginForm = loginPage.getForms().get(0);
@@ -113,10 +119,21 @@ public class FacebookManager {
 
             throw new FacebookException(homePage, "Error occured while logging in");
         }
-        HtmlElement profileButton = homePage.getElementByAccessKey('2');
-        HtmlPage profilePage = profileButton.click();
 
-        String profileURL = profilePage.getUrl().toString();
+
+        DomNodeList<HtmlElement> elementsByTagName = homePage.getElementsByTagName("a");
+        String profileURL = "";
+
+        for (HtmlElement element : elementsByTagName) {
+            if (element.getAttribute("class") != null
+                    && element.getAttribute("class").equals("headerTinymanName")) {
+                HtmlAnchor profilebutton = (HtmlAnchor) element;
+                profileURL = profilebutton.getHrefAttribute();
+                break;
+            }
+        }
+
+
         int index = profileURL.indexOf('=');
         String accountID = profileURL.substring(index + 1);
         AuthenticatedAccount myAccount = new AuthenticatedAccount(accountID, webClient, profileURL, userEmail, userPassword);
@@ -208,17 +225,19 @@ public class FacebookManager {
                         authenticatedAccount,
                         outputDirectory));
             } catch (Exception ex) {
-                Logger.getLogger(FacebookManager.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FacebookManager.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             }
 
         }
         Queues.add(queue);
-        Thread thread = new Thread(queue);
+        Thread thread = new Thread(queue);        
+        thread.setName("Task queue");
         thread.start();
     }
 
     private ArrayList<Class<?>> reloadPlugins() {
 
+        Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Loading plugins");
 
         allClasses.clear();
 
@@ -234,7 +253,7 @@ public class FacebookManager {
             try {
                 urlclassloader = new URLClassLoader(new URL[]{new File(System.getProperty("user.dir")).toURI().toURL()});
             } catch (MalformedURLException ex) {
-                Logger.getLogger(FacebookManager.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FacebookManager.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             }
             for (int i = 0; i < allFiles.length; i++) {
                 try {
@@ -266,6 +285,7 @@ public class FacebookManager {
             }
         } catch (Exception ex) {
         }
+        Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Loaded " + allClasses.size() + " plugins");
         return allClasses;
     }
 

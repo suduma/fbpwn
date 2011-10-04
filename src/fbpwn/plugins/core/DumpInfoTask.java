@@ -88,7 +88,7 @@ public class DumpInfoTask extends FacebookTask {
             infoWriterAsText.close();
 
         } catch (IOException ex) {
-            Logger.getLogger(DumpInfoTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DumpInfoTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             return false;
         }
         

@@ -22,6 +22,8 @@ package fbpwn.core;
 
 import fbpwn.ui.FacebookGUI;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Represents a Facebook task 
@@ -53,7 +55,7 @@ public abstract class FacebookTask {
         this.authenticatedProfile = authenticatedProfile;
         this.directory = directory;
         facebookGUI.addTask((FacebookTask)this);
-        taskState = FacebookTaskState.Waiting;
+        taskState = FacebookTaskState.Waiting;        
     }
 
     /**

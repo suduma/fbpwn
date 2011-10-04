@@ -145,9 +145,9 @@ public class FacebookAccount {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
         } catch (FailingHttpStatusCodeException ex) {
-            Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
         }
         return null;
     }

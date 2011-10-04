@@ -21,6 +21,7 @@
 package fbpwn.ui;
 
 import fbpwn.core.AuthenticatedAccount;
+import fbpwn.core.ExceptionHandler;
 import fbpwn.core.FacebookException;
 
 import fbpwn.core.FacebookManager;
@@ -158,7 +159,8 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         @Override
         protected Object doInBackground() throws Exception {
-            try {
+
+            try {                
                 return FacebookManager.getInstance().logIn(jTextField1.getText(),
                         jTextField2.getText());
             } catch (final FacebookException exception) {
@@ -169,7 +171,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         FacebookExceptionDisplayer.displayException(exception);
                     }
                 });
-
+                Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), exception);
                 return null;
             } catch (final IOException ex) {
                 SwingUtilities.invokeAndWait(new Runnable() {
@@ -179,6 +181,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         JOptionPane.showMessageDialog(null, "Failed to connect to server", "Error Occurred", JOptionPane.ERROR_MESSAGE);
                     }
                 });
+                Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
                 return null;
             }
 
@@ -190,9 +193,9 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     try {
         authenticatedProfile = (AuthenticatedAccount) backgrn.get();
     } catch (InterruptedException ex) {
-        Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
     } catch (ExecutionException ex) {
-        Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
     }
 
     this.authenticatedAccount = authenticatedProfile;

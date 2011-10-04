@@ -80,9 +80,9 @@ public class DumpWallTask extends FacebookTask {
                         }
                     });
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
                 } catch (InvocationTargetException ex) {
-                    Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
                 }
                 if (checkForCancel()) {
                     return true;
@@ -134,10 +134,10 @@ public class DumpWallTask extends FacebookTask {
                 getFacebookGUI().updateTaskProgress(this);
             }
         } catch (IOException ex) {
-            Logger.getLogger(DumpWallTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DumpWallTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             return false;
         } catch (FailingHttpStatusCodeException ex) {
-            Logger.getLogger(DumpWallTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DumpWallTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             return false;
         }
         return true;

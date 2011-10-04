@@ -102,7 +102,7 @@ public class DumpThumbnailImagesTask extends FacebookTask {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(DumpThumbnailImagesTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DumpThumbnailImagesTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             return false;
         }
         setTaskState(FacebookTaskState.Finished);

@@ -120,7 +120,7 @@ public class DumpFriendsTask extends FacebookTask {
             friendsWriter.flush();
             friendsWriter.close();
         } catch (IOException ex) {
-            Logger.getLogger(DumpFriendsTask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DumpFriendsTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             return false;
         }
         setMessage("Finished");
