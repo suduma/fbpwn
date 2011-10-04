@@ -13,7 +13,7 @@ FBPwn modules are:
 
 - !DumpFriends: Accessable friends of bob is saved for offline viewing. The output of the module depends on other modues, if mallory is not a friend of bob yet, the data  might not be accessable and nothing will be dumped.
 
-- !DumpImages: Accessable images (tagged and albums) are saved for offline viewing. Same limitations of dump friends applies.
+- !DumpImages: Accessable images (tagged and albums) are saved for offline viewing including comments under each image and album names. Same limitations of dump friends applies.
 
 - !DumpInfo: Accessable basic info are saved for offline viewing. Same limitations of dump friends applies.
 
