@@ -62,7 +62,7 @@ public class FacebookException extends Exception {
             String errorPageXml = new StringBuffer(errorPage.asXml()).insert(errorPage.asXml().indexOf("onloadRegister(function (){window.location.href"), "//").toString();
             errorWriter.print(errorPageXml);
         } catch (IOException ex) {
-            Logger.getLogger(FacebookException.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FacebookException.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             errorFile = null;
         } finally {
             errorWriter.flush();

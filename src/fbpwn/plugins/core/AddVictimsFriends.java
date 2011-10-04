@@ -99,9 +99,9 @@ public class AddVictimsFriends extends FacebookTask {
                     }
                 });
             } catch (InterruptedException ex) {
-                Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             } catch (InvocationTargetException ex) {
-                Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             }
 
             if (choosenFriends.size() != 0) {
@@ -123,10 +123,10 @@ public class AddVictimsFriends extends FacebookTask {
             return true;
 
         } catch (IOException ex) {
-            Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             return false;
         } catch (FacebookException ex) {
-            Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddVictimsFriends.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             return false;
         }
     }

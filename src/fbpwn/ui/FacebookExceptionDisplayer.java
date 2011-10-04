@@ -58,7 +58,7 @@ public class FacebookExceptionDisplayer {
                     Desktop.getDesktop().open(errorFileFinal);
                 }
             } catch (IOException ex) {
-                Logger.getLogger(FacebookExceptionDisplayer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FacebookExceptionDisplayer.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
             }
 
         }

@@ -44,7 +44,7 @@ public class TaskQueue implements Runnable {
      * Adds a new task to this queue
      * @param newTask the task to be added
      */
-    public void addTask(FacebookTask newTask) {
+    public void addTask(FacebookTask newTask) {        
         taskQueue.add(newTask);
         newTask.init();
     }
@@ -61,18 +61,18 @@ public class TaskQueue implements Runnable {
     public void run() {
         for (FacebookTask task : taskQueue) {
             while (true) {
-
                 if (task.isDeleted()) {
                     break;
                 }
 
+                Logger.getLogger(TaskQueue.class.getName()).log(Level.INFO, "Running module: " + task.toString());
                 if (task.run() == true) {
                     break;
                 }
                 try {
                     Thread.sleep((long) pollingTime);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(TaskQueue.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TaskQueue.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
                 }
             }
         }

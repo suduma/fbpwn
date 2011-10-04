@@ -86,7 +86,12 @@ public class DumpImagesTask extends FacebookTask {
                 List<HtmlAnchor> anchors = photosPage.getAnchors();
                 for (int i = 0; i < anchors.size(); i++) {
                     if (anchors.get(i).getHrefAttribute().contains("/media/set")) {
-                        albumsURL.add("http://m.facebook.com" + anchors.get(i).getHrefAttribute());
+
+                        if (!anchors.get(i).getHrefAttribute().contains("m.facebook.com")) {
+                            albumsURL.add("http://m.facebook.com" + anchors.get(i).getHrefAttribute());
+                        } else {
+                            albumsURL.add(anchors.get(i).getHrefAttribute());
+                        }
                     }
                 }
                 //checking for Additional album pages
@@ -95,8 +100,8 @@ public class DumpImagesTask extends FacebookTask {
                 } catch (Exception ex) {
                     break;
                 }
-                
-                if(checkForCancel()){
+
+                if (checkForCancel()) {
                     return true;
                 }
             }
@@ -106,24 +111,23 @@ public class DumpImagesTask extends FacebookTask {
                 getFacebookGUI().updateTaskProgress(this);
                 HtmlPage album = getAuthenticatedProfile().getBrowser().getPage(albumsURL.get(i));
                 processAlbum(album, i + 1);
-                
-                if(checkForCancel()){
+
+                if (checkForCancel()) {
                     return true;
                 }
             }
-            setMessage((albumsURL.isEmpty())?"No Albums or Albums are not accesible":"Finished");
+            setMessage((albumsURL.isEmpty()) ? "No Albums or Albums are not accesible" : "Finished");
             setTaskState(FacebookTaskState.Finished);
             setPercentage(100.0);
             getFacebookGUI().updateTaskProgress(this);
         } catch (IOException ex) {
-            Logger.getLogger(DumpAlbums.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DumpImagesTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
         } catch (FailingHttpStatusCodeException ex) {
-            Logger.getLogger(DumpAlbums.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DumpImagesTask.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
         }
         return true;
     }
-    
-    
+
     /**
      * Dump Album Images with Comments
      * @param albumPage Mobile album page containing Images with comments
@@ -147,8 +151,8 @@ public class DumpImagesTask extends FacebookTask {
             } catch (Exception ex) {
                 break;
             }
-            
-            if(checkForCancel()){
+
+            if (checkForCancel()) {
                 return;
             }
         }
@@ -164,11 +168,10 @@ public class DumpImagesTask extends FacebookTask {
             commentWriter.println("<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.0//EN\" \"http://www.wapforum.org/DTD/xhtml-mobile10.dtd\">");
             commentWriter.println(albumPage.getElementsByTagName("head").get(0).asXml());
             //checking for previous comments on this image
-            try{
+            try {
                 //dumping previous comments
-                dumpComments((HtmlPage)getAuthenticatedProfile().getBrowser().getPage("http://m.facebook.com"+photoPage.getElementById("see_prev").getElementsByTagName("a").get(0).getAttribute("href")), commentWriter);
-            }
-            catch (Exception ex){
+                dumpComments((HtmlPage) getAuthenticatedProfile().getBrowser().getPage("http://m.facebook.com" + photoPage.getElementById("see_prev").getElementsByTagName("a").get(0).getAttribute("href")), commentWriter);
+            } catch (Exception ex) {
             }
             //dumping latest comments
             dumpComments(photoPage, commentWriter);
@@ -176,25 +179,25 @@ public class DumpImagesTask extends FacebookTask {
             commentWriter.close();
             setPercentage((double) (j + 1) / photos.size() * 100);
             getFacebookGUI().updateTaskProgress(this);
-            
-            if(checkForCancel()){
+
+            if (checkForCancel()) {
                 return;
             }
         }
-        
+
         //dumping Album name in text file
         PrintWriter nameWriter = new PrintWriter(new File(getDirectory().getAbsolutePath() + System.getProperty("file.separator") + "Album-" + albumIndex + System.getProperty("file.separator") + "Album Name.txt"), "UTF-8");
         nameWriter.println(albumPage.getTitleText());
         nameWriter.flush();
         nameWriter.close();
     }
-    
+
     /**
      * Dump comments on Album images
      * @param photoPage Mobile photo page containing comments
      * @param commentWriter Writer used to dump comments
      */
-    private void dumpComments(HtmlPage photoPage, PrintWriter commentWriter){
+    private void dumpComments(HtmlPage photoPage, PrintWriter commentWriter) {
         DomNodeList<HtmlElement> divisions = photoPage.getElementsByTagName("div");
         for (int i = 0; i < divisions.size(); i++) {
             if (divisions.get(i).getAttribute("class").equals("ufi")) {
@@ -203,7 +206,7 @@ public class DumpImagesTask extends FacebookTask {
             }
         }
     }
-    
+
     @Override
     public String toString() {
         return "Dump Album's photos with comments";

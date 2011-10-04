@@ -21,12 +21,15 @@
 package fbpwn.ui;
 
 import fbpwn.core.AuthenticatedAccount;
+import fbpwn.core.ExceptionHandler;
 import fbpwn.core.FacebookManager;
 import fbpwn.core.FacebookTask;
 import fbpwn.core.SettingsManager;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -109,6 +112,7 @@ public class MainForm extends javax.swing.JFrame implements FacebookGUI {
         jButton10 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -293,7 +297,7 @@ public class MainForm extends javax.swing.JFrame implements FacebookGUI {
 
         jTabbedPane2.setBorder(null);
 
-        jLabel2.setFont(new java.awt.Font("Cantarell", 1, 15)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Cantarell", 1, 15));
         jLabel2.setText("Proxy Settings");
 
         jCheckBox1.setText("Use proxy");
@@ -325,11 +329,11 @@ public class MainForm extends javax.swing.JFrame implements FacebookGUI {
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE))
+                                .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))
+                                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
                             .addComponent(jLabel5))))
                 .addGap(141, 141, 141))
         );
@@ -349,7 +353,7 @@ public class MainForm extends javax.swing.JFrame implements FacebookGUI {
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Network", jPanel4);
@@ -397,6 +401,14 @@ public class MainForm extends javax.swing.JFrame implements FacebookGUI {
         jTabbedPane1.addTab("Settings", jPanel3);
 
         jMenu1.setText("File");
+
+        jMenuItem7.setText("View log");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem7);
 
         jMenuItem1.setText("Exit");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -637,7 +649,7 @@ private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         backgrn.execute();
         loadingDialog.setLocationRelativeTo(null);
         loadingDialog.setVisible(true);
-        try {
+        try {            
             page = (String) backgrn.get();
             if (page == null) {
                 return;
@@ -646,9 +658,9 @@ private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             updateDialog.setVisible(true);
 
         } catch (InterruptedException ex) {
-            Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
         } catch (ExecutionException ex) {
-            Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddAuthenticatedAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
@@ -727,6 +739,14 @@ private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         loadSettings();
     }//GEN-LAST:event_jButton10ActionPerformed
 
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        try {
+            Desktop.getDesktop().open(new File("log.html"));
+        } catch (IOException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
+        }
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
     private void loadSettings() {
         if (SettingsManager.useProxy()) {
             jCheckBox1.setSelected(true);
@@ -783,6 +803,7 @@ private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
