@@ -10,12 +10,12 @@ The following steps will help you build FBPwn from source using [http://Netbeans
 
 You need to checkout the code, There are 2 ways mentioned in this wiki to do this.
 
- # Using command-line subversion client
+1. Using command-line subversion client
  If you have subversion command-line client installed, you can run the following command to get the source code:
 
  `svn checkout http://fbpwn.googlecode.com/svn/ fbpwn-read-only` 
 
- # Using Netbeans
+2. Using Netbeans
  Simply, from the menu bar, click on: `"Team" --> "Subversion" --> "Checkout"`. Enter the following URL: `"http://fbpwn.googlecode.com/svn/"` and follow the instructions mentioned in the wizard.
 
 == Creating the project ==
