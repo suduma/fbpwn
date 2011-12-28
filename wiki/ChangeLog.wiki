@@ -1,7 +1,21 @@
 #labels Featured
 = Change log =
 
-Latest version: <Beta - 0.1.6>
+Latest version: <Beta - 0.1.7>
+
+----
+
+*Beta - 0.1.7*
+
++Fixed getting authenticated profile's ID while logging in
+
++Fixed issue 36 , Dumping friend list is now working correctly
+
++Fixed issue 34 , AddVictimFriends is now working correctly
+
++Fixed issue 27 , ProfileCloner is now working correctly
+
++Fixed ImageDumper, it now dumps images correctly
 
 ----
 
