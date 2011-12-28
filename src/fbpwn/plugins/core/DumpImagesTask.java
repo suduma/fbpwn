@@ -138,7 +138,7 @@ public class DumpImagesTask extends FacebookTask {
         DomNodeList<HtmlElement> anchors;  //All anchors in album page
         while (true) {
             // Extracting images links
-            HtmlElement body = albumPage.getElementById("body");
+            HtmlElement body = albumPage.getElementById("root");
             anchors = body.getElementsByTagName("a");
             for (int j = 0; j < anchors.size(); j++) {
                 if (anchors.get(j).getAttribute("href").contains("fbid")) {

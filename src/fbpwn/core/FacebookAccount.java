@@ -20,7 +20,6 @@
  */
 package fbpwn.core;
 
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
@@ -29,8 +28,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 /**
@@ -50,8 +47,8 @@ public class FacebookAccount {
      * @param Browser The web browser used to authenticate or send friend request to this Account
      */
     public FacebookAccount(String profileURL, WebClient Browser) {
-        profilePageURL = profileURL;
-        webBrowser = Browser;
+	profilePageURL = profileURL;
+	webBrowser = Browser;
     }
 
     /**
@@ -59,14 +56,14 @@ public class FacebookAccount {
      * @return The URL of the info page for this account
      */
     public String getInfoPageURL() {
-        String infoPage;
-        if (!profilePageURL.contains("id")) {
-            infoPage = (profilePageURL.contains("?")) ? profilePageURL.substring(0, profilePageURL.indexOf("?") + 1) : profilePageURL + "?";
-        } else {
-            infoPage = profilePageURL + "&";
-        }
-        infoPage += "sk=info";
-        return infoPage;
+	String infoPage;
+	if (!profilePageURL.contains("id")) {
+	    infoPage = (profilePageURL.contains("?")) ? profilePageURL.substring(0, profilePageURL.indexOf("?") + 1) : profilePageURL + "?";
+	} else {
+	    infoPage = profilePageURL + "&";
+	}
+	infoPage += "sk=info";
+	return infoPage;
     }
 
     /**
@@ -74,14 +71,14 @@ public class FacebookAccount {
      * @return A String representing the URL of the tagged photos page
      */
     public String getTaggedPhotosURL() {
-        String taggedPhotosPage;
-        if (!profilePageURL.contains("id")) {
-            taggedPhotosPage = (profilePageURL.contains("?")) ? profilePageURL.substring(0, profilePageURL.indexOf("?") + 1) : profilePageURL + "?";
-        } else {
-            taggedPhotosPage = profilePageURL + "&";
-        }
-        taggedPhotosPage += "sk=photos";
-        return taggedPhotosPage;
+	String taggedPhotosPage;
+	if (!profilePageURL.contains("id")) {
+	    taggedPhotosPage = (profilePageURL.contains("?")) ? profilePageURL.substring(0, profilePageURL.indexOf("?") + 1) : profilePageURL + "?";
+	} else {
+	    taggedPhotosPage = profilePageURL + "&";
+	}
+	taggedPhotosPage += "sk=photos";
+	return taggedPhotosPage;
     }
 
     /**
@@ -90,17 +87,19 @@ public class FacebookAccount {
      * @throws IOException If failed to reach Facebook.com
      */
     public ArrayList<String> getAlbumsURLs() throws IOException {
-        ArrayList<String> albumsURLs = new ArrayList<String>();
-        //parsing Tagged photos page to extract Albums Hrefs
-        List<HtmlAnchor> Hrfs = ((HtmlPage) getWebBrowser().getPage(getTaggedPhotosURL())).getAnchors();
-        for (int i = 0; i < Hrfs.size(); i++) {
-            if (Hrfs.get(i).getHrefAttribute().contains("media/set") && !albumsURLs.contains(Hrfs.get(i).getHrefAttribute())) {
-                albumsURLs.add(Hrfs.get(i).getHrefAttribute());
-            }
-        }
-        if(albumsURLs.size() == 0) return albumsURLs;
-        albumsURLs.remove(0);
-        return albumsURLs;
+	ArrayList<String> albumsURLs = new ArrayList<String>();
+	//parsing Tagged photos page to extract Albums Hrefs
+	List<HtmlAnchor> Hrfs = ((HtmlPage) getWebBrowser().getPage(getTaggedPhotosURL())).getAnchors();
+	for (int i = 0; i < Hrfs.size(); i++) {
+	    if (Hrfs.get(i).getHrefAttribute().contains("media/set") && !albumsURLs.contains(Hrfs.get(i).getHrefAttribute())) {
+		albumsURLs.add(Hrfs.get(i).getHrefAttribute());
+	    }
+	}
+	if (albumsURLs.size() == 0) {
+	    return albumsURLs;
+	}
+	albumsURLs.remove(0);
+	return albumsURLs;
     }
 
     /**
@@ -108,7 +107,7 @@ public class FacebookAccount {
      * @return The web browser
      */
     public WebClient getBrowser() {
-        return getWebBrowser();
+	return getWebBrowser();
     }
 
     /**
@@ -116,40 +115,44 @@ public class FacebookAccount {
      * @return The FacebookAccount's profile page
      */
     public String getProfilePageURL() {
-        return profilePageURL;
+	return profilePageURL;
     }
 
     public String getMobileInfoPageURL() {
-        String mobInfo = profilePageURL;
+	String mobInfo = profilePageURL;
 
-        int indexOfparams = mobInfo.indexOf('&');
-        if (indexOfparams == -1) {
-            mobInfo = "http://m." + mobInfo.substring(mobInfo.indexOf("facebook"));
-        } else {
-            mobInfo = "http://m." + mobInfo.substring(mobInfo.indexOf("facebook"), indexOfparams);
-        }
-        if (mobInfo.contains("id")) {
-            return mobInfo + "&v=info";
-        } else {
-            return mobInfo + "?v=info";
-        }
+	int indexOfparams = mobInfo.indexOf('&');
+	if (indexOfparams == -1) {
+	    mobInfo = "http://m." + mobInfo.substring(mobInfo.indexOf("facebook"));
+	} else {
+	    mobInfo = "http://m." + mobInfo.substring(mobInfo.indexOf("facebook"), indexOfparams);
+	}
+	if (mobInfo.contains("id")) {
+	    return mobInfo + "&v=info";
+	} else {
+	    return mobInfo + "?v=info";
+	}
     }
 
     public String getMobileFriendsPageUrl() {
-        try {
-            HtmlPage profilePage = webBrowser.getPage(getMobileInfoPageURL());
-            List<HtmlAnchor> anchs = profilePage.getAnchors();
-            for (int i = 0; i < anchs.size(); i++) {
-                if (anchs.get(i).getHrefAttribute().contains("friends.php") && anchs.get(i).getAttribute("class").equals("")) {
-                    return ("http://m.facebook.com" + anchs.get(i).getHrefAttribute());
-                }
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
-        } catch (FailingHttpStatusCodeException ex) {
-            Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
-        }
-        return null;
+	String id = profilePageURL.substring(profilePageURL.indexOf('=') + 1);
+	return "http://m.facebook.com/friends/?id=" + id;
+	/*  try {
+	
+	
+	HtmlPage profilePage = webBrowser.getPage(getMobileInfoPageURL());
+	List<HtmlAnchor> anchs = profilePage.getAnchors();
+	for (int i = 0; i < anchs.size(); i++) {
+	if (anchs.get(i).getHrefAttribute().contains("friends.php") && anchs.get(i).getAttribute("class").equals("")) {
+	return ("http://m.facebook.com" + anchs.get(i).getHrefAttribute());
+	}
+	}
+	} catch (IOException ex) {
+	Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
+	} catch (FailingHttpStatusCodeException ex) {
+	Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
+	}
+	return null;*/
     }
 
     /**
@@ -157,14 +160,14 @@ public class FacebookAccount {
      * @return The FacebookAccount's friend page
      */
     public String getFriendsPageURL() {
-        String friendsPage;
-        if (!profilePageURL.contains("id")) {
-            friendsPage = (profilePageURL.contains("?")) ? profilePageURL.substring(0, profilePageURL.indexOf("?") + 1) : profilePageURL + "?";
-        } else {
-            friendsPage = profilePageURL + "&";
-        }
-        friendsPage += "sk=friends";
-        return friendsPage;
+	String friendsPage;
+	if (!profilePageURL.contains("id")) {
+	    friendsPage = (profilePageURL.contains("?")) ? profilePageURL.substring(0, profilePageURL.indexOf("?") + 1) : profilePageURL + "?";
+	} else {
+	    friendsPage = profilePageURL + "&";
+	}
+	friendsPage += "sk=friends";
+	return friendsPage;
     }
 
     /**
@@ -174,113 +177,131 @@ public class FacebookAccount {
      */
     public ArrayList<FacebookAccount> getFriends() throws IOException {
 
-        ArrayList<FacebookAccount> friendsList = new ArrayList<FacebookAccount>();
+	ArrayList<FacebookAccount> friendsList = new ArrayList<FacebookAccount>();
 
 
-        String page = getMobileFriendsPageUrl();
+	String page = getMobileFriendsPageUrl();
 
-        if (page == null) {
-            return null;
-        }
+	if (page == null) {
+	    return null;
+	}
 
-        HtmlPage friendsPage = getBrowser().getPage(page);
-        while (true) {
-            HtmlElement friends = friendsPage.getElementById("rootContent");
-            int index = 0;
+	HtmlPage friendsPage = getBrowser().getPage(page);
 
-            DomNodeList<HtmlElement> images = friends.getElementsByTagName("img");
-            DomNodeList<HtmlElement> hrefs = friends.getElementsByTagName("a");
-            ArrayList<HtmlElement> validHrefs = new ArrayList<HtmlElement>();
 
-            for (HtmlElement href : hrefs) {
-                HtmlAnchor anc = (HtmlAnchor) href;
-                if (anc.hasAttribute("name") == true
-                        && anc.hasAttribute("href") == true) {
-                    validHrefs.add(href);
-                }
-            }
+	int index = 0;
+	while (true) {
 
-            for (int i = 0; i < validHrefs.size(); i++) {
+	    HtmlElement friends = null;
+	    DomNodeList<HtmlElement> elementsByTagName = friendsPage.getElementsByTagName("div");
+	    for (HtmlElement e : elementsByTagName) {
+		if (e.getAttribute("class") != null && e.getAttribute("class").equals("acw") && e.getAttribute("id") != null
+			&& e.getAttribute("id").equals("root")) {
+		    friends = e;
+		    break;
+		}
+	    }
+	    if (friends == null) {
+		return null;
+	    }
 
-                FacebookAccount newAccount = new FacebookAccount("http://facebook.com" + validHrefs.get(i).getAttribute("href"), webBrowser);
-                newAccount.setProfilePhotoURL(images.get(i).getAttribute("src"));
-                newAccount.setName(validHrefs.get(i).getAttribute("name"));
-                friendsList.add(newAccount);
-            }
-            try {
-                friendsPage = friendsPage.getAnchorByText("See More Friends").click();
-            } catch (Exception ex) {
-                break;
-            }
-        }
-        
-        if(friendsList.size() == 0 ) {
-            return null;
-        }
-        
-        return friendsList;
+
+
+	    DomNodeList<HtmlElement> images = friends.getElementsByTagName("img");
+	    DomNodeList<HtmlElement> hrefs = friends.getElementsByTagName("a");
+	    ArrayList<HtmlElement> validHrefs = new ArrayList<HtmlElement>();
+
+	    for (HtmlElement href : hrefs) {
+		HtmlAnchor anc = (HtmlAnchor) href;
+		if (anc.hasAttribute("name") == true
+			&& anc.hasAttribute("href") == true) {
+		    validHrefs.add(href);
+		}
+	    }
+
+	    for (int i = 0; i < validHrefs.size(); i++) {
+
+		FacebookAccount newAccount = new FacebookAccount("http://facebook.com" + validHrefs.get(i).getAttribute("href"), webBrowser);
+		newAccount.setProfilePhotoURL(images.get(i + 1).getAttribute("src"));
+
+		newAccount.setName(validHrefs.get(i).getAttribute("name"));
+		friendsList.add(newAccount);
+	    }
+	    try {
+		friendsPage = friendsPage.getAnchorByText("See More Friends").click();
+	    } catch (Exception ex) {
+		break;
+	    }
+	    index++;
+	}
+
+	if (friendsList.isEmpty()) {
+	    return null;
+	}
+
+	return friendsList;
     }
 
     /**
      * @return the name
      */
     public String getName() {
-        return name;
+	return name;
     }
 
     /**
      * @param name the name to set
      */
     public void setName(String name) {
-        this.name = name;
+	this.name = name;
     }
 
     /**
      * @return the photoURL
      */
     public String getProfilePhotoURL() {
-        return profilePhotoURL;
+	return profilePhotoURL;
     }
 
     /**
      * @param photoURL the photoURL to set
      */
     public void setProfilePhotoURL(String photoURL) {
-        this.profilePhotoURL = photoURL.replace("_q", "_n").replace("s50x50/", "");
+	this.profilePhotoURL = photoURL.replace("_q", "_n").replace("s50x50/", "");
     }
 
     /**
      * @return the webBrowser
      */
     public WebClient getWebBrowser() {
-        return webBrowser;
+	return webBrowser;
     }
 
     /**
      * @param webBrowser the webBrowser to set
      */
     public void setWebBrowser(WebClient webBrowser) {
-        this.webBrowser = webBrowser;
+	this.webBrowser = webBrowser;
     }
 
     /**
      * @param profilePageURL the profilePageURL to set
      */
     public void setProfilePageURL(String profilePageURL) {
-        this.profilePageURL = profilePageURL;
+	this.profilePageURL = profilePageURL;
     }
 
     /**
      * @return the profilePicture
      */
     public ImageIcon getProfilePicture() {
-        return profilePicture;
+	return profilePicture;
     }
 
     /**
      * @param profilePicture the profilePicture to set
      */
     public void setProfilePicture(ImageIcon profilePicture) {
-        this.profilePicture = profilePicture;
+	this.profilePicture = profilePicture;
     }
 }
