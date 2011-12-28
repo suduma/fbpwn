@@ -131,7 +131,7 @@ public class ProfileClonerTask extends FacebookTask {
             setMessage("Cloning Name");
             getFacebookGUI().updateTaskProgress(this);
             //setting fake account name to match target clone name
-            HtmlPage settings = getAuthenticatedProfile().getBrowser().getPage("http://m.facebook.com/settings.php?name&refid=31");
+            HtmlPage settings = getAuthenticatedProfile().getBrowser().getPage("http://m.facebook.com/settings/account/?name&refid=0");
             HtmlForm changeNameForm = settings.getForms().get(0);
             HtmlElement firstName = changeNameForm.getInputByName("new_first_name");
             firstName.setAttribute("value", targetFname);
@@ -184,7 +184,7 @@ public class ProfileClonerTask extends FacebookTask {
                 hideGender.click();
             }
             //hide fake account birthday info
-            HtmlSelect birthday = (HtmlSelect) basicInfoPage.getElementById("birthday_visibility");
+            HtmlSelect birthday = (HtmlSelect) basicInfoPage.getElementByName("birthday_visibility");
             HtmlOption birthdayVisibility = birthday.getOptionByValue("3");
             birthday.setSelectedAttribute(birthdayVisibility, true);
                         

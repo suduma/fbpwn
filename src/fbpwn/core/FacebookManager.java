@@ -54,15 +54,15 @@ public class FacebookManager {
     private FacebookGUI facebookGUI;
     private ArrayList<Class<?>> allClasses = new ArrayList<Class<?>>();
     private BrowserVersion[] browsers = new BrowserVersion[]{BrowserVersion.FIREFOX_3,
-        BrowserVersion.FIREFOX_3_6,
-        //BrowserVersion.INTERNET_EXPLORER_6, //Causing troubles !
-        BrowserVersion.INTERNET_EXPLORER_7,
-        BrowserVersion.INTERNET_EXPLORER_8};
+	BrowserVersion.FIREFOX_3_6,
+	//BrowserVersion.INTERNET_EXPLORER_6, //Causing troubles !
+	BrowserVersion.INTERNET_EXPLORER_7,
+	BrowserVersion.INTERNET_EXPLORER_8};
     private Random rand = new Random(System.currentTimeMillis());
 
     private FacebookManager() {
-        authenticatedAccounts = new ArrayList<AuthenticatedAccount>();
-        reloadPlugins();
+	authenticatedAccounts = new ArrayList<AuthenticatedAccount>();
+	reloadPlugins();
     }
 
     /**
@@ -70,10 +70,10 @@ public class FacebookManager {
      * @return The only instance of FacebookManager
      */
     public static FacebookManager getInstance() {
-        if (facebookManagerInstance == null) {
-            facebookManagerInstance = new FacebookManager();
-        }
-        return facebookManagerInstance;
+	if (facebookManagerInstance == null) {
+	    facebookManagerInstance = new FacebookManager();
+	}
+	return facebookManagerInstance;
     }
 
     /**
@@ -86,58 +86,58 @@ public class FacebookManager {
      */
     public AuthenticatedAccount logIn(String userEmail, String userPassword) throws IOException, FacebookException {
 
-        Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Trying to login");
+	Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Trying to login");
 
-        WebClient webClient = null;
-        if (SettingsManager.useProxy()) {
-            webClient = new WebClient(browsers[rand.nextInt(browsers.length)],
-                    SettingsManager.getProxyHost(),
-                    Integer.parseInt(SettingsManager.getProxyPort()));
-            ;
-        } else {
-            webClient = new WebClient(browsers[rand.nextInt(browsers.length)]);
-        }
+	WebClient webClient = null;
+	if (SettingsManager.useProxy()) {
+	    webClient = new WebClient(browsers[rand.nextInt(browsers.length)],
+		    SettingsManager.getProxyHost(),
+		    Integer.parseInt(SettingsManager.getProxyPort()));
+	    ;
+	} else {
+	    webClient = new WebClient(browsers[rand.nextInt(browsers.length)]);
+	}
 
-        Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Using " + webClient.getBrowserVersion().getUserAgent());
+	Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Using " + webClient.getBrowserVersion().getUserAgent());
 
-        webClient.setCssEnabled(false);
-        webClient.setJavaScriptEnabled(false);
-        HtmlPage loginPage = webClient.getPage("http://www.facebook.com");
-        if (loginPage.getForms().isEmpty()) {
-            throw new IOException();
-        }
-        HtmlForm loginForm = loginPage.getForms().get(0);
-        HtmlSubmitInput button = (HtmlSubmitInput) loginForm.getInputsByValue("Log In").get(0);
-        HtmlTextInput textField = loginForm.getInputByName("email");
-        textField.setValueAttribute(userEmail);
-        HtmlPasswordInput textField2 = loginForm.getInputByName("pass");
-        textField2.setValueAttribute(userPassword);
-        HtmlPage homePage = button.click();
-        String homePageAsText = homePage.asText();
-        if (!homePageAsText.contains("News Feed")
-                && !homePageAsText.contains("Edit My Profile")) {
+	webClient.setCssEnabled(false);
+	webClient.setJavaScriptEnabled(false);
+	HtmlPage loginPage = webClient.getPage("http://www.facebook.com");
+	if (loginPage.getForms().isEmpty()) {
+	    throw new IOException();
+	}
+	HtmlForm loginForm = loginPage.getForms().get(0);
+	HtmlSubmitInput button = (HtmlSubmitInput) loginForm.getInputsByValue("Log In").get(0);
+	HtmlTextInput textField = loginForm.getInputByName("email");
+	textField.setValueAttribute(userEmail);
+	HtmlPasswordInput textField2 = loginForm.getInputByName("pass");
+	textField2.setValueAttribute(userPassword);
+	HtmlPage homePage = button.click();
+	String homePageAsText = homePage.asText();
+	if (!homePageAsText.contains("News Feed")
+		&& !homePageAsText.contains("Edit My Profile")) {
 
-            throw new FacebookException(homePage, "Error occured while logging in");
-        }
-
-
-        DomNodeList<HtmlElement> elementsByTagName = homePage.getElementsByTagName("a");
-        String profileURL = "";
-
-        for (HtmlElement element : elementsByTagName) {
-            if (element.getAttribute("class") != null
-                    && element.getAttribute("class").equals("headerTinymanName")) {
-                HtmlAnchor profilebutton = (HtmlAnchor) element;
-                profileURL = profilebutton.getHrefAttribute();
-                break;
-            }
-        }
+	    throw new FacebookException(homePage, "Error occured while logging in");
+	}
 
 
-        int index = profileURL.indexOf('=');
-        String accountID = profileURL.substring(index + 1);
-        AuthenticatedAccount myAccount = new AuthenticatedAccount(accountID, webClient, profileURL, userEmail, userPassword);
-        return myAccount;
+	DomNodeList<HtmlElement> elementsByTagName = homePage.getElementsByTagName("a");
+	String profileURL = "";
+
+	for (HtmlElement element : elementsByTagName) {
+	    if (element.getAttribute("title") != null
+		    && element.getAttribute("title").equals("Profile")) {
+		HtmlAnchor profilebutton = (HtmlAnchor) element;
+		profileURL = profilebutton.getHrefAttribute();
+		break;
+	    }
+	}
+
+
+	int index = profileURL.indexOf('=');
+	String accountID = profileURL.substring(index + 1, profileURL.indexOf("&"));
+	AuthenticatedAccount myAccount = new AuthenticatedAccount(accountID, webClient, profileURL, userEmail, userPassword);
+	return myAccount;
     }
 
     /**
@@ -145,7 +145,7 @@ public class FacebookManager {
      * @param newAccount The account to be added
      */
     public void addAuthenticatedProfile(AuthenticatedAccount newAccount) {
-        authenticatedAccounts.add(newAccount);
+	authenticatedAccounts.add(newAccount);
     }
 
     /**
@@ -153,7 +153,7 @@ public class FacebookManager {
      * @param DeleteAccount The account to be deleted
      */
     public void removeAuthenticatedProfile(AuthenticatedAccount DeleteAccount) {
-        authenticatedAccounts.remove(DeleteAccount);
+	authenticatedAccounts.remove(DeleteAccount);
     }
 
     /**
@@ -161,7 +161,7 @@ public class FacebookManager {
      * @return The GUI associated with the FacebookManager
      */
     public FacebookGUI getFacebookGUI() {
-        return facebookGUI;
+	return facebookGUI;
     }
 
     /**
@@ -169,7 +169,7 @@ public class FacebookManager {
      * @param facebookGUI The Facebook GUI associated with the FacebookManager
      */
     public void setFacebookGUI(FacebookGUI facebookGUI) {
-        this.facebookGUI = facebookGUI;
+	this.facebookGUI = facebookGUI;
     }
 
     /**
@@ -177,7 +177,7 @@ public class FacebookManager {
      * @return A list of authenticated accounts
      */
     public List<AuthenticatedAccount> getAuthenticatedAccounts() {
-        return this.authenticatedAccounts;
+	return this.authenticatedAccounts;
     }
 
     /**
@@ -189,14 +189,14 @@ public class FacebookManager {
      * @param pollingTime The delay between each retry in case of a plugin failure
      */
     public void createTaskQueue(AuthenticatedAccount authenticatedAccount,
-            String targetAccountURL,
-            File outputDirectory,
-            Class<?>[] selectedPlugins,
-            double pollingTime) {
-        createTaskQueue(authenticatedAccount,
-                new FacebookAccount(targetAccountURL,
-                authenticatedAccount.getBrowser()),
-                outputDirectory, selectedPlugins, pollingTime);
+	    String targetAccountURL,
+	    File outputDirectory,
+	    Class<?>[] selectedPlugins,
+	    double pollingTime) {
+	createTaskQueue(authenticatedAccount,
+		new FacebookAccount(targetAccountURL,
+		authenticatedAccount.getBrowser()),
+		outputDirectory, selectedPlugins, pollingTime);
     }
 
     /**
@@ -208,85 +208,93 @@ public class FacebookManager {
      * @param pollingTime The delay between each retry in case of a plugin failure
      */
     public void createTaskQueue(AuthenticatedAccount authenticatedAccount,
-            FacebookAccount targetAccount,
-            File outputDirectory,
-            Class<?>[] selectedPlugins,
-            double pollingTime) {
-        TaskQueue queue = new TaskQueue(pollingTime);
-        for (int i = 0; i < selectedPlugins.length; i++) {
-            try {
-                queue.addTask((FacebookTask) selectedPlugins[i].getConstructor(
-                        FacebookGUI.class,
-                        FacebookAccount.class,
-                        AuthenticatedAccount.class,
-                        File.class).newInstance(
-                        facebookGUI,
-                        targetAccount,
-                        authenticatedAccount,
-                        outputDirectory));
-            } catch (Exception ex) {
-                Logger.getLogger(FacebookManager.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
-            }
+	    FacebookAccount targetAccount,
+	    File outputDirectory,
+	    Class<?>[] selectedPlugins,
+	    double pollingTime) {
+	TaskQueue queue = new TaskQueue(pollingTime);
+	for (int i = 0; i < selectedPlugins.length; i++) {
+	    try {
+		queue.addTask((FacebookTask) selectedPlugins[i].getConstructor(
+			FacebookGUI.class,
+			FacebookAccount.class,
+			AuthenticatedAccount.class,
+			File.class).newInstance(
+			facebookGUI,
+			targetAccount,
+			authenticatedAccount,
+			outputDirectory));
+	    } catch (Exception ex) {
+		Logger.getLogger(FacebookManager.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
+	    }
 
-        }
-        Queues.add(queue);
-        Thread thread = new Thread(queue);        
-        thread.setName("Task queue");
-        thread.start();
+	}
+	Queues.add(queue);
+	Thread thread = new Thread(queue);
+	thread.setName("Task queue");
+	thread.start();
     }
 
     private ArrayList<Class<?>> reloadPlugins() {
 
-        Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Loading plugins");
+	Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Loading plugins");
 
-        allClasses.clear();
+	allClasses.clear();
+	/*	allClasses.add(DumpFriendsTask.class);
+	allClasses.add(AddVictimsFriends.class);
+	allClasses.add(CheckFriendRequestTask.class);
+	allClasses.add(DumpImagesTask.class);
+	allClasses.add(DumpInfoTask.class);
+	allClasses.add(DumpThumbnailImagesTask.class);
+	allClasses.add(DumpWallTask.class);
+	allClasses.add(ProfileClonerTask.class);
+	 */
+	try {
+	    Class<?> myclass = null;
+	    File Directory = new File(
+		    System.getProperty("user.dir")
+		    + System.getProperty("file.separator") + "fbpwn"
+		    + System.getProperty("file.separator") + "plugins"
+		    + System.getProperty("file.separator") + "core");
+	    File allFiles[] = Directory.listFiles();
+	    URLClassLoader urlclassloader = null;
+	    try {
+		urlclassloader = new URLClassLoader(new URL[]{new File(System.getProperty("user.dir")).toURI().toURL()});
+	    } catch (MalformedURLException ex) {
+		Logger.getLogger(FacebookManager.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
+	    }
+	    for (int i = 0; i < allFiles.length; i++) {
+		try {
+		    myclass = urlclassloader.loadClass("fbpwn.plugins.core." + allFiles[i].getName().
+			    substring(0, allFiles[i].getName().indexOf('.')));
 
-        try {
-            Class<?> myclass = null;
-            File Directory = new File(
-                    System.getProperty("user.dir")
-                    + System.getProperty("file.separator") + "fbpwn"
-                    + System.getProperty("file.separator") + "plugins"
-                    + System.getProperty("file.separator") + "core");
-            File allFiles[] = Directory.listFiles();
-            URLClassLoader urlclassloader = null;
-            try {
-                urlclassloader = new URLClassLoader(new URL[]{new File(System.getProperty("user.dir")).toURI().toURL()});
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(FacebookManager.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
-            }
-            for (int i = 0; i < allFiles.length; i++) {
-                try {
-                    myclass = urlclassloader.loadClass("fbpwn.plugins.core." + allFiles[i].getName().
-                            substring(0, allFiles[i].getName().indexOf('.')));
-
-                } catch (ClassNotFoundException ex) {
-                    continue;
-                }
-                Constructor<?>[] cnList = myclass.getDeclaredConstructors();
-                try {
-                    if (myclass.getSuperclass().getName().equals(FacebookTask.class.getName())) {
-                        for (int j = 0; j < cnList.length; j++) {
-                            Constructor cnTemp = cnList[j];
-                            Class pmList[] =
-                                    cnTemp.getParameterTypes();
-                            if (pmList.length == 4) {
-                                if (pmList[0].toString().equals("interface fbpwn.ui.FacebookGUI")
-                                        && pmList[1].toString().equals("class fbpwn.core.FacebookAccount")
-                                        && pmList[2].toString().equals("class fbpwn.core.AuthenticatedAccount")
-                                        && pmList[3].toString().equals("class java.io.File")) {
-                                    allClasses.add(myclass);
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                }
-            }
-        } catch (Exception ex) {
-        }
-        Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Loaded " + allClasses.size() + " plugins");
-        return allClasses;
+		} catch (ClassNotFoundException ex) {
+		    continue;
+		}
+		Constructor<?>[] cnList = myclass.getDeclaredConstructors();
+		try {
+		    if (myclass.getSuperclass().getName().equals(FacebookTask.class.getName())) {
+			for (int j = 0; j < cnList.length; j++) {
+			    Constructor cnTemp = cnList[j];
+			    Class pmList[] =
+				    cnTemp.getParameterTypes();
+			    if (pmList.length == 4) {
+				if (pmList[0].toString().equals("interface fbpwn.ui.FacebookGUI")
+					&& pmList[1].toString().equals("class fbpwn.core.FacebookAccount")
+					&& pmList[2].toString().equals("class fbpwn.core.AuthenticatedAccount")
+					&& pmList[3].toString().equals("class java.io.File")) {
+				    allClasses.add(myclass);
+				}
+			    }
+			}
+		    }
+		} catch (Exception ex) {
+		}
+	    }
+	} catch (Exception ex) {
+	}
+	Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Loaded " + allClasses.size() + " plugins");
+	return allClasses;
     }
 
     /**
@@ -294,7 +302,7 @@ public class FacebookManager {
      * @return A list of all available plugins
      */
     public ArrayList<Class<?>> getPlugins() {
-        return allClasses;
+	return allClasses;
     }
 
     /**
@@ -302,6 +310,6 @@ public class FacebookManager {
      * @param removedTask The task to be canceled
      */
     public void removeTask(FacebookTask removedTask) {
-        removedTask.deleteTask();
+	removedTask.deleteTask();
     }
 }
