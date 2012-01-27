@@ -46,7 +46,7 @@ import org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel;
  */
 public class FBPwn {
 
-    public static final String appVersion = "Beta - 0.1.7";
+    public static final String appVersion = "Beta - 0.2";
 
     /**
      * Runs the application using the default Swing GUI
