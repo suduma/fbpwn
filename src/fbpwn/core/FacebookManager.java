@@ -44,7 +44,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Represents the manager for Facebook communication 
+ * Represents
+ * the
+ * manager
+ * for
+ * Facebook
+ * communication
  */
 public class FacebookManager {
 
@@ -66,8 +71,24 @@ public class FacebookManager {
     }
 
     /**
-     * Gets an instance of FacebookManager, and creates one if none existed
-     * @return The only instance of FacebookManager
+     * Gets
+     * an
+     * instance
+     * of
+     * FacebookManager,
+     * and
+     * creates
+     * one
+     * if
+     * none
+     * existed
+     *
+     * @return
+     * The
+     * only
+     * instance
+     * of
+     * FacebookManager
      */
     public static FacebookManager getInstance() {
 	if (facebookManagerInstance == null) {
@@ -77,12 +98,56 @@ public class FacebookManager {
     }
 
     /**
-     * Log in to the attacker's account using the given username and password
-     * @param userEmail The e-mail used for logging in
-     * @param userPassword The password used for logging in
-     * @return The AuthenticatedAccount representing the attackers account
-     * @throws IOException If failed to reach Facebook.com
-     * @throws FacebookException If a Facebook error occurred
+     * Log
+     * in
+     * to
+     * the
+     * attacker's
+     * account
+     * using
+     * the
+     * given
+     * username
+     * and
+     * password
+     *
+     * @param
+     * userEmail
+     * The
+     * e-mail
+     * used
+     * for
+     * logging
+     * in
+     * @param
+     * userPassword
+     * The
+     * password
+     * used
+     * for
+     * logging
+     * in
+     * @return
+     * The
+     * AuthenticatedAccount
+     * representing
+     * the
+     * attackers
+     * account
+     * @throws
+     * IOException
+     * If
+     * failed
+     * to
+     * reach
+     * Facebook.com
+     * @throws
+     * FacebookException
+     * If
+     * a
+     * Facebook
+     * error
+     * occurred
      */
     public AuthenticatedAccount logIn(String userEmail, String userPassword) throws IOException, FacebookException {
 
@@ -133,60 +198,184 @@ public class FacebookManager {
 	    }
 	}
 
+	String accountID;
+	try {
+	    if (profileURL.contains("&")) {
+		int index = profileURL.indexOf('=') + 1;
+		accountID = profileURL.substring(index, profileURL.indexOf("&"));
+	    } else {
+		int index = profileURL.indexOf("facebook.com/") + "facebook.com/".length();
+		if (profileURL.contains("?")) {
+		    accountID = profileURL.substring(index, profileURL.indexOf("?"));
+		} else {
+		    accountID = profileURL.substring(index);
+		}
+	    }
+	} catch (Exception ex) {
+	    accountID = "Couldn't get ID";
+	    Logger.getLogger(FacebookManager.class.getName()).log(Level.WARNING, "Failed to get User ID while logging in");
+	}
 
-	int index = profileURL.indexOf('=');
-	String accountID = profileURL.substring(index + 1, profileURL.indexOf("&"));
 	AuthenticatedAccount myAccount = new AuthenticatedAccount(accountID, webClient, profileURL, userEmail, userPassword);
 	return myAccount;
     }
 
     /**
-     * Adds a new AuthenticatedAccount
-     * @param newAccount The account to be added
+     * Adds
+     * a
+     * new
+     * AuthenticatedAccount
+     *
+     * @param
+     * newAccount
+     * The
+     * account
+     * to
+     * be
+     * added
      */
     public void addAuthenticatedProfile(AuthenticatedAccount newAccount) {
 	authenticatedAccounts.add(newAccount);
     }
 
     /**
-     * Deletes AuthenticatedAccount
-     * @param DeleteAccount The account to be deleted
+     * Deletes
+     * AuthenticatedAccount
+     *
+     * @param
+     * DeleteAccount
+     * The
+     * account
+     * to
+     * be
+     * deleted
      */
     public void removeAuthenticatedProfile(AuthenticatedAccount DeleteAccount) {
 	authenticatedAccounts.remove(DeleteAccount);
     }
 
     /**
-     * Returns the GUI associated with the FacebookManager
-     * @return The GUI associated with the FacebookManager
+     * Returns
+     * the
+     * GUI
+     * associated
+     * with
+     * the
+     * FacebookManager
+     *
+     * @return
+     * The
+     * GUI
+     * associated
+     * with
+     * the
+     * FacebookManager
      */
     public FacebookGUI getFacebookGUI() {
 	return facebookGUI;
     }
 
     /**
-     * Sets the Facebook GUI associated with the FacebookManager
-     * @param facebookGUI The Facebook GUI associated with the FacebookManager
+     * Sets
+     * the
+     * Facebook
+     * GUI
+     * associated
+     * with
+     * the
+     * FacebookManager
+     *
+     * @param
+     * facebookGUI
+     * The
+     * Facebook
+     * GUI
+     * associated
+     * with
+     * the
+     * FacebookManager
      */
     public void setFacebookGUI(FacebookGUI facebookGUI) {
 	this.facebookGUI = facebookGUI;
     }
 
     /**
-     * Gets all authenticated accounts
-     * @return A list of authenticated accounts
+     * Gets
+     * all
+     * authenticated
+     * accounts
+     *
+     * @return
+     * A
+     * list
+     * of
+     * authenticated
+     * accounts
      */
     public List<AuthenticatedAccount> getAuthenticatedAccounts() {
 	return this.authenticatedAccounts;
     }
 
     /**
-     * Creates a new task queue
-     * @param authenticatedAccount The account to be used in attacking
-     * @param targetAccountURL The target's profile URL
-     * @param outputDirectory The directory to save all the dumped data in
-     * @param selectedPlugins The list of selected plugins and modules to be used for attacking
-     * @param pollingTime The delay between each retry in case of a plugin failure
+     * Creates
+     * a
+     * new
+     * task
+     * queue
+     *
+     * @param
+     * authenticatedAccount
+     * The
+     * account
+     * to
+     * be
+     * used
+     * in
+     * attacking
+     * @param
+     * targetAccountURL
+     * The
+     * target's
+     * profile
+     * URL
+     * @param
+     * outputDirectory
+     * The
+     * directory
+     * to
+     * save
+     * all
+     * the
+     * dumped
+     * data
+     * in
+     * @param
+     * selectedPlugins
+     * The
+     * list
+     * of
+     * selected
+     * plugins
+     * and
+     * modules
+     * to
+     * be
+     * used
+     * for
+     * attacking
+     * @param
+     * pollingTime
+     * The
+     * delay
+     * between
+     * each
+     * retry
+     * in
+     * case
+     * of
+     * a
+     * plugin
+     * failure
      */
     public void createTaskQueue(AuthenticatedAccount authenticatedAccount,
 	    String targetAccountURL,
@@ -200,12 +389,64 @@ public class FacebookManager {
     }
 
     /**
-     * Creates a new task queue
-     * @param authenticatedAccount The account to be used in attacking
-     * @param targetAccount The target's account
-     * @param outputDirectory The directory to save all the dumped data in
-     * @param selectedPlugins The list of selected plugins and modules to be used for attacking
-     * @param pollingTime The delay between each retry in case of a plugin failure
+     * Creates
+     * a
+     * new
+     * task
+     * queue
+     *
+     * @param
+     * authenticatedAccount
+     * The
+     * account
+     * to
+     * be
+     * used
+     * in
+     * attacking
+     * @param
+     * targetAccount
+     * The
+     * target's
+     * account
+     * @param
+     * outputDirectory
+     * The
+     * directory
+     * to
+     * save
+     * all
+     * the
+     * dumped
+     * data
+     * in
+     * @param
+     * selectedPlugins
+     * The
+     * list
+     * of
+     * selected
+     * plugins
+     * and
+     * modules
+     * to
+     * be
+     * used
+     * for
+     * attacking
+     * @param
+     * pollingTime
+     * The
+     * delay
+     * between
+     * each
+     * retry
+     * in
+     * case
+     * of
+     * a
+     * plugin
+     * failure
      */
     public void createTaskQueue(AuthenticatedAccount authenticatedAccount,
 	    FacebookAccount targetAccount,
@@ -240,14 +481,15 @@ public class FacebookManager {
 	Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Loading plugins");
 
 	allClasses.clear();
-	/*	allClasses.add(DumpFriendsTask.class);
-	allClasses.add(AddVictimsFriends.class);
-	allClasses.add(CheckFriendRequestTask.class);
-	allClasses.add(DumpImagesTask.class);
-	allClasses.add(DumpInfoTask.class);
-	allClasses.add(DumpThumbnailImagesTask.class);
-	allClasses.add(DumpWallTask.class);
-	allClasses.add(ProfileClonerTask.class);
+	/*
+	 * allClasses.add(DumpFriendsTask.class);
+	 * allClasses.add(AddVictimsFriends.class);
+	 * allClasses.add(CheckFriendRequestTask.class);
+	 * allClasses.add(DumpImagesTask.class);
+	 * allClasses.add(DumpInfoTask.class);
+	 * allClasses.add(DumpThumbnailImagesTask.class);
+	 * allClasses.add(DumpWallTask.class);
+	 * allClasses.add(ProfileClonerTask.class);
 	 */
 	try {
 	    Class<?> myclass = null;
@@ -298,16 +540,41 @@ public class FacebookManager {
     }
 
     /**
-     * Returns a list of all available plugins
-     * @return A list of all available plugins
+     * Returns
+     * a
+     * list
+     * of
+     * all
+     * available
+     * plugins
+     *
+     * @return
+     * A
+     * list
+     * of
+     * all
+     * available
+     * plugins
      */
     public ArrayList<Class<?>> getPlugins() {
 	return allClasses;
     }
 
     /**
-     * Removes a task from task queue
-     * @param removedTask The task to be canceled
+     * Removes
+     * a
+     * task
+     * from
+     * task
+     * queue
+     *
+     * @param
+     * removedTask
+     * The
+     * task
+     * to
+     * be
+     * canceled
      */
     public void removeTask(FacebookTask removedTask) {
 	removedTask.deleteTask();
