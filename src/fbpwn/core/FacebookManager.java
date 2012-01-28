@@ -44,12 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Represents
- * the
- * manager
- * for
- * Facebook
- * communication
+ * Represents the manager for Facebook  communication
  */
 public class FacebookManager {
 
@@ -71,24 +66,8 @@ public class FacebookManager {
     }
 
     /**
-     * Gets
-     * an
-     * instance
-     * of
-     * FacebookManager,
-     * and
-     * creates
-     * one
-     * if
-     * none
-     * existed
-     *
-     * @return
-     * The
-     * only
-     * instance
-     * of
-     * FacebookManager
+     * Gets an instance of FacebookManager, and creates one if none existed     
+     * @return The only instance of FacebookManager
      */
     public static FacebookManager getInstance() {
 	if (facebookManagerInstance == null) {
@@ -98,56 +77,13 @@ public class FacebookManager {
     }
 
     /**
-     * Log
-     * in
-     * to
-     * the
-     * attacker's
-     * account
-     * using
-     * the
-     * given
-     * username
-     * and
-     * password
+     * Log  in to the attacker's account using the given username and password
      *
-     * @param
-     * userEmail
-     * The
-     * e-mail
-     * used
-     * for
-     * logging
-     * in
-     * @param
-     * userPassword
-     * The
-     * password
-     * used
-     * for
-     * logging
-     * in
-     * @return
-     * The
-     * AuthenticatedAccount
-     * representing
-     * the
-     * attackers
-     * account
-     * @throws
-     * IOException
-     * If
-     * failed
-     * to
-     * reach
-     * Facebook.com
-     * @throws
-     * FacebookException
-     * If
-     * a
-     * Facebook
-     * error
-     * occurred
+     * @param userEmail The e-mail used for logging in
+     * @param userPassword The password used for logging in
+     * @return The AuthenticatedAccount representing the attackers account
+     * @throws IOException If failed to reach Facebook.com
+     * @throws FacebookException If a Facebook error occurred
      */
     public AuthenticatedAccount logIn(String userEmail, String userPassword) throws IOException, FacebookException {
 
@@ -221,161 +157,57 @@ public class FacebookManager {
     }
 
     /**
-     * Adds
-     * a
-     * new
-     * AuthenticatedAccount
-     *
-     * @param
-     * newAccount
-     * The
-     * account
-     * to
-     * be
-     * added
+     * Adds a new AuthenticatedAccount
+     * @param newAccount The account to be added
      */
     public void addAuthenticatedProfile(AuthenticatedAccount newAccount) {
 	authenticatedAccounts.add(newAccount);
     }
 
     /**
-     * Deletes
-     * AuthenticatedAccount
+     * Deletes AuthenticatedAccount
      *
-     * @param
-     * DeleteAccount
-     * The
-     * account
-     * to
-     * be
-     * deleted
+     * @param DeleteAccount The account to be deleted
      */
     public void removeAuthenticatedProfile(AuthenticatedAccount DeleteAccount) {
 	authenticatedAccounts.remove(DeleteAccount);
     }
 
     /**
-     * Returns
-     * the
-     * GUI
-     * associated
-     * with
-     * the
-     * FacebookManager
+     * Returns the GUI associated with the FacebookManager
      *
-     * @return
-     * The
-     * GUI
-     * associated
-     * with
-     * the
-     * FacebookManager
+     * @return The GUI associated with the FacebookManager
      */
     public FacebookGUI getFacebookGUI() {
 	return facebookGUI;
     }
 
     /**
-     * Sets
-     * the
-     * Facebook
-     * GUI
-     * associated
-     * with
-     * the
-     * FacebookManager
+     * Sets the Facebook GUI associated with the FacebookManager
      *
-     * @param
-     * facebookGUI
-     * The
-     * Facebook
-     * GUI
-     * associated
-     * with
-     * the
-     * FacebookManager
+     * @param facebookGUI The Facebook GUI associated with the FacebookManager
      */
     public void setFacebookGUI(FacebookGUI facebookGUI) {
 	this.facebookGUI = facebookGUI;
     }
 
     /**
-     * Gets
-     * all
-     * authenticated
-     * accounts
+     * Gets all authenticated accounts
      *
-     * @return
-     * A
-     * list
-     * of
-     * authenticated
-     * accounts
+     * @return A list of authenticated accounts
      */
     public List<AuthenticatedAccount> getAuthenticatedAccounts() {
 	return this.authenticatedAccounts;
     }
 
     /**
-     * Creates
-     * a
-     * new
-     * task
-     * queue
+     * Creates a new task queue
      *
-     * @param
-     * authenticatedAccount
-     * The
-     * account
-     * to
-     * be
-     * used
-     * in
-     * attacking
-     * @param
-     * targetAccountURL
-     * The
-     * target's
-     * profile
-     * URL
-     * @param
-     * outputDirectory
-     * The
-     * directory
-     * to
-     * save
-     * all
-     * the
-     * dumped
-     * data
-     * in
-     * @param
-     * selectedPlugins
-     * The
-     * list
-     * of
-     * selected
-     * plugins
-     * and
-     * modules
-     * to
-     * be
-     * used
-     * for
-     * attacking
-     * @param
-     * pollingTime
-     * The
-     * delay
-     * between
-     * each
-     * retry
-     * in
-     * case
-     * of
-     * a
-     * plugin
-     * failure
+     * @param authenticatedAccount The account to be used in attacking
+     * @param targetAccountURL The target's profile URL
+     * @param outputDirectory The directory to save all the dumped data in
+     * @param selectedPlugins The list of selected plugins and modules to be used for attacking
+     * @param pollingTime The delay between each retry  in case of a plugin failure
      */
     public void createTaskQueue(AuthenticatedAccount authenticatedAccount,
 	    String targetAccountURL,
@@ -389,64 +221,13 @@ public class FacebookManager {
     }
 
     /**
-     * Creates
-     * a
-     * new
-     * task
-     * queue
+     * Creates a new task queue
      *
-     * @param
-     * authenticatedAccount
-     * The
-     * account
-     * to
-     * be
-     * used
-     * in
-     * attacking
-     * @param
-     * targetAccount
-     * The
-     * target's
-     * account
-     * @param
-     * outputDirectory
-     * The
-     * directory
-     * to
-     * save
-     * all
-     * the
-     * dumped
-     * data
-     * in
-     * @param
-     * selectedPlugins
-     * The
-     * list
-     * of
-     * selected
-     * plugins
-     * and
-     * modules
-     * to
-     * be
-     * used
-     * for
-     * attacking
-     * @param
-     * pollingTime
-     * The
-     * delay
-     * between
-     * each
-     * retry
-     * in
-     * case
-     * of
-     * a
-     * plugin
-     * failure
+     * @param authenticatedAccount The account to be used in attacking
+     * @param targetAccount The target's account
+     * @param outputDirectory The directory to save all the dumped data in
+     * @param selectedPlugins The list of selected plugins and modules to be used for attacking
+     * @param pollingTime The delay between each retry in case of a plugin failure
      */
     public void createTaskQueue(AuthenticatedAccount authenticatedAccount,
 	    FacebookAccount targetAccount,
@@ -540,41 +321,18 @@ public class FacebookManager {
     }
 
     /**
-     * Returns
-     * a
-     * list
-     * of
-     * all
-     * available
-     * plugins
+     * Returns a list of all available plugins
      *
-     * @return
-     * A
-     * list
-     * of
-     * all
-     * available
-     * plugins
+     * @return A list of all available plugins
      */
     public ArrayList<Class<?>> getPlugins() {
 	return allClasses;
     }
 
     /**
-     * Removes
-     * a
-     * task
-     * from
-     * task
-     * queue
+     * Removes a  task from task queue
      *
-     * @param
-     * removedTask
-     * The
-     * task
-     * to
-     * be
-     * canceled
+     * @param removedTask The task to  be canceled
      */
     public void removeTask(FacebookTask removedTask) {
 	removedTask.deleteTask();

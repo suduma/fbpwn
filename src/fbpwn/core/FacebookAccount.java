@@ -20,12 +20,15 @@
  */
 package fbpwn.core;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
@@ -36,6 +39,7 @@ import javax.swing.ImageIcon;
 public class FacebookAccount {
 
     private String profilePageURL; //URL of the profile page
+    private String profileId;
     private WebClient webBrowser; // WebClient which connects to the facebook profile
     private String name;
     private String profilePhotoURL;
@@ -49,6 +53,40 @@ public class FacebookAccount {
     public FacebookAccount(String profileURL, WebClient Browser) {
 	profilePageURL = profileURL;
 	webBrowser = Browser;
+	// Extract profile id
+	profileId = extractProfileId(profileURL);
+	if (profileId==null) {
+		throw new RuntimeException("Unable to extract profile id from URL " + profileURL);
+	}
+    }
+    
+    private String extractProfileId(String profileURL) {
+    	try {
+    		URL url = new URL(profileURL);
+    		String query = url.getQuery();
+    		if (query!=null) {
+    			for (String q: query.split("&")) {
+    				if (q.startsWith("id=")) {
+    					return q.substring(3);
+    				}
+    			}
+    		}
+    	} catch (MalformedURLException e) {
+    		throw new RuntimeException("Invalid profile URL");
+    	}
+		try {
+			HtmlPage friendsPage = getBrowser().getPage(profileURL);
+			String blockLink = friendsPage.getElementById("profile_action_report_block").getElementsByTagName("a").get(0).getAttribute("href");
+			for(String param: blockLink.substring(blockLink.indexOf("?")+1).split("&")) {
+				if (param.startsWith("cid=")) {
+					return param.substring(4);
+				}
+			}
+			
+		} catch (Exception e) {
+    		throw new RuntimeException("Error getting profile");
+		}    			
+    	return null;
     }
 
     /**
@@ -117,6 +155,10 @@ public class FacebookAccount {
     public String getProfilePageURL() {
 	return profilePageURL;
     }
+    
+    public String getProfileId() {
+    	return profileId;
+    }
 
     public String getMobileInfoPageURL() {
 	String mobInfo = profilePageURL;
@@ -135,8 +177,9 @@ public class FacebookAccount {
     }
 
     public String getMobileFriendsPageUrl() {
-	String id = profilePageURL.substring(profilePageURL.indexOf('=') + 1);
-	return "http://m.facebook.com/friends/?id=" + id;
+	// String id = profilePageURL.substring(profilePageURL.indexOf('=') + 1);
+	// return "http://m.facebook.com/friends/?id=" + id;
+	return "http://m.facebook.com/friends/?id=" + profileId;
 	/*  try {
 	
 	
