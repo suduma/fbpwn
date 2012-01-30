@@ -32,11 +32,7 @@ import fbpwn.core.FacebookTask;
 import fbpwn.core.FacebookTaskState;
 import fbpwn.plugins.ui.DictionaryBuilderDialog;
 import fbpwn.ui.FacebookGUI;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -50,6 +46,7 @@ public class DictionaryBuilderTask extends FacebookTask {
     private boolean SearchPhotos = false;
     private boolean SearchWallPosts = false;
     private int WallPages = 0;
+    private int minimumWordLength = 3;
     private DictionaryBuilderTask task;
     private ArrayList<String> Dictionary;
 
@@ -121,6 +118,15 @@ public class DictionaryBuilderTask extends FacebookTask {
 			    }
 			}
 		    }
+                    DomNodeList<HtmlElement> anchors = storiesArea.getElementsByTagName("a");
+                    for(int i=0;i<anchors.size();i++)
+                    {
+                        if(anchors.get(i).getAttribute("class").equals("sec") && anchors.get(i).getTextContent().contains("Comments"))
+                        {
+                            HtmlPage postPage = tempWebClient.getPage("http://m.facebook.com"+anchors.get(i).getAttribute("href"));
+                            processPosts(postPage);
+                        }
+                    }
 		    try {
 			VictimWallPage = VictimWallPage.getAnchorByText("See More Posts").click();
 		    } catch (Exception ex) {
@@ -147,7 +153,10 @@ public class DictionaryBuilderTask extends FacebookTask {
 	    setPercentage(0.0);
 	    getFacebookGUI().updateTaskProgress(this);
 	    for (int i = 0; i < Dictionary.size(); i++) {
+		if(Dictionary.get(i).length() >= minimumWordLength)
+		{
 		pw.println(Dictionary.get(i));
+		}
 	    }
 	    pw.flush();
 	    pw.close();
@@ -162,7 +171,25 @@ public class DictionaryBuilderTask extends FacebookTask {
 	getFacebookGUI().updateTaskProgress(this);
 	return true;
     }
+    private void processPosts(HtmlPage postPage)
+    {
+        DomNodeList<HtmlElement> divisions = postPage.getElementsByTagName("div");
+            for (int i = 0; i < divisions.size(); i++) {
+                if (divisions.get(i).getAttribute("class").equals("row aclb apl")) {
+                    String textContent = divisions.get(i).getFirstChild().getTextContent();
+                    String profileName = divisions.get(i).getFirstChild().getFirstChild().getTextContent();
+                    StringTokenizer token = new StringTokenizer(textContent.replace(profileName, ""));
+                    while (token.hasMoreTokens()) {
+                        String word = token.nextToken();
+                        if (!Dictionary.contains(word)) {
+                            Dictionary.add(word);
+                        }
+                    }
+                }
 
+
+            }
+    }
     private void processAlbum(HtmlPage albumPage) throws FileNotFoundException, UnsupportedEncodingException, IOException {
 	ArrayList<String> photos = new ArrayList<String>();  //Array of Images links
 	DomNodeList<HtmlElement> anchors;  //All anchors in album page
