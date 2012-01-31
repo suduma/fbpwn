@@ -23,6 +23,7 @@ package fbpwn.core;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
+import fbpwn.plugins.core.CloseCircleFriendsTask;
 import fbpwn.plugins.core.DictionaryBuilderTask;
 import fbpwn.ui.FacebookGUI;
 import java.io.File;
@@ -267,6 +268,7 @@ public class FacebookManager {
 	 * allClasses.add(ProfileClonerTask.class);
 	 */
 	allClasses.add(DictionaryBuilderTask.class);
+	allClasses.add(CloseCircleFriendsTask.class);
 	try {
 	    Class<?> myclass = null;
 	    File Directory = new File(
