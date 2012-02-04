@@ -85,9 +85,8 @@ public class AuthenticatedAccount extends FacebookAccount {
         //Friend Request was sent and Declined
         if (friendProfilePage.asXml().contains("Friend Request Sent")) {
             return RequestState.RequestPending;
-            //Friend Request Accepted, Start Dumping Info
         } else
-        if (friendProfilePage.asXml().contains("navItem_friends")) {
+        if (friendProfilePage.asXml().contains("FriendRequestAdd hidden_elem addButton uiButton")) {
             return RequestState.RequestAccepted;
         } else
         if (friendProfilePage.asXml().contains("Add Friend") && !friendProfilePage.asXml().contains("Cancel Friend Request")) {
