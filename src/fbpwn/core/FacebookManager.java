@@ -39,7 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Represents the manager for Facebook  communication
+ * Represents the manager for Facebook communication
  */
 public class FacebookManager {
 
@@ -61,7 +61,8 @@ public class FacebookManager {
     }
 
     /**
-     * Gets an instance of FacebookManager, and creates one if none existed     
+     * Gets an instance of FacebookManager, and creates one if none existed
+     *
      * @return The only instance of FacebookManager
      */
     public static FacebookManager getInstance() {
@@ -72,7 +73,7 @@ public class FacebookManager {
     }
 
     /**
-     * Log  in to the attacker's account using the given username and password
+     * Log in to the attacker's account using the given username and password
      *
      * @param userEmail The e-mail used for logging in
      * @param userPassword The password used for logging in
@@ -153,6 +154,7 @@ public class FacebookManager {
 
     /**
      * Adds a new AuthenticatedAccount
+     *
      * @param newAccount The account to be added
      */
     public void addAuthenticatedProfile(AuthenticatedAccount newAccount) {
@@ -201,18 +203,21 @@ public class FacebookManager {
      * @param authenticatedAccount The account to be used in attacking
      * @param targetAccountURL The target's profile URL
      * @param outputDirectory The directory to save all the dumped data in
-     * @param selectedPlugins The list of selected plugins and modules to be used for attacking
-     * @param pollingTime The delay between each retry  in case of a plugin failure
+     * @param selectedPlugins The list of selected plugins and modules to be
+     * used for attacking
+     * @param pollingTime The delay between each retry in case of a plugin
+     * failure
+     * @param useVictimID Use Victim's ID as the output folder
      */
     public void createTaskQueue(AuthenticatedAccount authenticatedAccount,
 	    String targetAccountURL,
 	    File outputDirectory,
 	    Class<?>[] selectedPlugins,
-	    double pollingTime) {
+	    double pollingTime, boolean useVictimID) {
 	createTaskQueue(authenticatedAccount,
 		new FacebookAccount(targetAccountURL,
 		authenticatedAccount.getBrowser()),
-		outputDirectory, selectedPlugins, pollingTime);
+		outputDirectory, selectedPlugins, pollingTime, useVictimID);
     }
 
     /**
@@ -221,14 +226,24 @@ public class FacebookManager {
      * @param authenticatedAccount The account to be used in attacking
      * @param targetAccount The target's account
      * @param outputDirectory The directory to save all the dumped data in
-     * @param selectedPlugins The list of selected plugins and modules to be used for attacking
-     * @param pollingTime The delay between each retry in case of a plugin failure
+     * @param selectedPlugins The list of selected plugins and modules to be
+     * used for attacking
+     * @param pollingTime The delay between each retry in case of a plugin
+     * failure
+     * @param useVictimID Use Victim's ID as the output folder
      */
     public void createTaskQueue(AuthenticatedAccount authenticatedAccount,
 	    FacebookAccount targetAccount,
 	    File outputDirectory,
 	    Class<?>[] selectedPlugins,
-	    double pollingTime) {
+	    double pollingTime, boolean useVictimID) {
+
+	if (useVictimID) {
+	    String newPath = outputDirectory.getAbsolutePath() + System.getProperty("file.separator") + targetAccount.getProfileId();
+	    outputDirectory = new File(newPath);
+	    outputDirectory.mkdir();
+	}
+
 	TaskQueue queue = new TaskQueue(pollingTime);
 	for (int i = 0; i < selectedPlugins.length; i++) {
 	    try {
@@ -327,9 +342,9 @@ public class FacebookManager {
     }
 
     /**
-     * Removes a  task from task queue
+     * Removes a task from task queue
      *
-     * @param removedTask The task to  be canceled
+     * @param removedTask The task to be canceled
      */
     public void removeTask(FacebookTask removedTask) {
 	removedTask.deleteTask();
