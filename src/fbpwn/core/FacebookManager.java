@@ -23,8 +23,7 @@ package fbpwn.core;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
-import fbpwn.plugins.core.CloseCircleFriendsTask;
-import fbpwn.plugins.core.DictionaryBuilderTask;
+import fbpwn.plugins.core.*;
 import fbpwn.ui.FacebookGUI;
 import java.io.File;
 import java.io.IOException;
@@ -111,8 +110,7 @@ public class FacebookManager {
 	textField2.setValueAttribute(userPassword);
 	HtmlPage homePage = button.click();
 	String homePageAsText = homePage.asText();
-	if (!homePageAsText.contains("News Feed")
-		&& !homePageAsText.contains("Edit My Profile")) {
+	if (!homePageAsText.contains("News Feed")) {
 
 	    throw new FacebookException(homePage, "Error occured while logging in");
 	}
@@ -272,18 +270,18 @@ public class FacebookManager {
 	Logger.getLogger(FacebookManager.class.getName()).log(Level.INFO, "Loading plugins");
 
 	allClasses.clear();
-	/*
-	 * allClasses.add(DumpFriendsTask.class);
-	 * allClasses.add(AddVictimsFriends.class);
-	 * allClasses.add(CheckFriendRequestTask.class);
-	 * allClasses.add(DumpImagesTask.class);
-	 * allClasses.add(DumpInfoTask.class);
-	 * allClasses.add(DumpThumbnailImagesTask.class);
-	 * allClasses.add(DumpWallTask.class);
-	 * allClasses.add(ProfileClonerTask.class);
-	 */
+
+	allClasses.add(DumpFriendsTask.class);
+	allClasses.add(AddVictimsFriends.class);
+	allClasses.add(CheckFriendRequestTask.class);
+	allClasses.add(DumpImagesTask.class);
+	allClasses.add(DumpInfoTask.class);
+	allClasses.add(DumpThumbnailImagesTask.class);
+	allClasses.add(DumpWallTask.class);
+	allClasses.add(ProfileClonerTask.class);
 	allClasses.add(DictionaryBuilderTask.class);
 	allClasses.add(CloseCircleFriendsTask.class);
+	//allClasses.add(MobileDeviceReconTask.class);
 	try {
 	    Class<?> myclass = null;
 	    File Directory = new File(
