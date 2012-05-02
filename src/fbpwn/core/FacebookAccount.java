@@ -46,51 +46,62 @@ public class FacebookAccount {
     private ImageIcon profilePicture;
 
     /**
-     *  Creates a new Facebook account.     
+     * Creates a new Facebook account.
+     *
      * @param profileURL Profile page of this account
-     * @param Browser The web browser used to authenticate or send friend request to this Account
+     * @param Browser The web browser used to authenticate or send friend
+     * request to this Account
      */
     public FacebookAccount(String profileURL, WebClient Browser) {
 	profilePageURL = profileURL;
 	webBrowser = Browser;
 	// Extract profile id
 	profileId = extractProfileId(profileURL);
-	if (profileId==null) {
-		throw new RuntimeException("Unable to extract profile id from URL " + profileURL);
+	if (profileId == null) {
+	    throw new RuntimeException("Unable to extract profile id from URL " + profileURL);
 	}
     }
-    
+
     private String extractProfileId(String profileURL) {
-    	try {
-    		URL url = new URL(profileURL);
-    		String query = url.getQuery();
-    		if (query!=null) {
-    			for (String q: query.split("&")) {
-    				if (q.startsWith("id=")) {
-    					return q.substring(3);
-    				}
-    			}
-    		}
-    	} catch (MalformedURLException e) {
-    		throw new RuntimeException("Invalid profile URL");
-    	}
-		try {
-			HtmlPage friendsPage = getBrowser().getPage(profileURL);
-			String blockLink = friendsPage.getElementById("profile_action_report_block").getElementsByTagName("a").get(0).getAttribute("href");
-			for(String param: blockLink.substring(blockLink.indexOf("?")+1).split("&")) {
-				if (param.startsWith("cid=")) {
-					return param.substring(4);
-				}
-			}
-			
-		} catch (Exception e) {
-    		throw new RuntimeException("Error getting profile");
-		}    			
-    	return null;
+	try {
+	    URL url = new URL(profileURL);
+	    String query = url.getQuery();
+	    if (query != null) {
+		for (String q : query.split("&")) {
+		    if (q.startsWith("id=")) {
+			return q.substring(3);
+		    }
+		}
+	    }
+	} catch (MalformedURLException e) {
+	    throw new RuntimeException("Invalid profile URL");
+	}
+	try {
+	    HtmlPage friendsPage = getBrowser().getPage(profileURL);
+
+	    try {
+		return friendsPage.getElementByName("targetid").getAttribute("value");
+
+	    } catch (Exception ex) {
+	    }
+
+	    String blockLink = friendsPage.getElementById("profile_action_report_block").getElementsByTagName("a").get(0).getAttribute("href");
+	    for (String param : blockLink.substring(blockLink.indexOf("?") + 1).split("&")) {
+		if (param.startsWith("cid=")) {
+		    return param.substring(4);
+		}
+	    }
+
+
+	} catch (Exception e) {
+	    throw new RuntimeException("Error getting profile");
+	}
+	return null;
     }
 
     /**
      * Gets the URL of the info page
+     *
      * @return The URL of the info page for this account
      */
     public String getInfoPageURL() {
@@ -106,6 +117,7 @@ public class FacebookAccount {
 
     /**
      * Gets the URL of the tagged photos page
+     *
      * @return A String representing the URL of the tagged photos page
      */
     public String getTaggedPhotosURL() {
@@ -121,6 +133,7 @@ public class FacebookAccount {
 
     /**
      * Gets the URL for the albums' pages
+     *
      * @return List of URLs one for each album page
      * @throws IOException If failed to reach Facebook.com
      */
@@ -141,7 +154,9 @@ public class FacebookAccount {
     }
 
     /**
-     * Gets the web browser used to Authenticate on this Account or send friend request to this Account
+     * Gets the web browser used to Authenticate on this Account or send friend
+     * request to this Account
+     *
      * @return The web browser
      */
     public WebClient getBrowser() {
@@ -150,14 +165,15 @@ public class FacebookAccount {
 
     /**
      * Gets the FacebookAccount's profile page
+     *
      * @return The FacebookAccount's profile page
      */
     public String getProfilePageURL() {
 	return profilePageURL;
     }
-    
+
     public String getProfileId() {
-    	return profileId;
+	return profileId;
     }
 
     public String getMobileInfoPageURL() {
@@ -180,26 +196,29 @@ public class FacebookAccount {
 	// String id = profilePageURL.substring(profilePageURL.indexOf('=') + 1);
 	// return "http://m.facebook.com/friends/?id=" + id;
 	return "http://m.facebook.com/friends/?id=" + profileId;
-	/*  try {
-	
-	
-	HtmlPage profilePage = webBrowser.getPage(getMobileInfoPageURL());
-	List<HtmlAnchor> anchs = profilePage.getAnchors();
-	for (int i = 0; i < anchs.size(); i++) {
-	if (anchs.get(i).getHrefAttribute().contains("friends.php") && anchs.get(i).getAttribute("class").equals("")) {
-	return ("http://m.facebook.com" + anchs.get(i).getHrefAttribute());
-	}
-	}
-	} catch (IOException ex) {
-	Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
-	} catch (FailingHttpStatusCodeException ex) {
-	Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE, "Exception in thread: " + Thread.currentThread().getName(), ex);
-	}
-	return null;*/
+	/*
+	 * try {
+	 *
+	 *
+	 * HtmlPage profilePage = webBrowser.getPage(getMobileInfoPageURL());
+	 * List<HtmlAnchor> anchs = profilePage.getAnchors(); for (int i = 0; i
+	 * < anchs.size(); i++) { if
+	 * (anchs.get(i).getHrefAttribute().contains("friends.php") &&
+	 * anchs.get(i).getAttribute("class").equals("")) { return
+	 * ("http://m.facebook.com" + anchs.get(i).getHrefAttribute()); } } }
+	 * catch (IOException ex) {
+	 * Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE,
+	 * "Exception in thread: " + Thread.currentThread().getName(), ex); }
+	 * catch (FailingHttpStatusCodeException ex) {
+	 * Logger.getLogger(FacebookAccount.class.getName()).log(Level.SEVERE,
+	 * "Exception in thread: " + Thread.currentThread().getName(), ex); }
+	 * return null;
+	 */
     }
 
     /**
      * Gets the FacebookAccount's friend page
+     *
      * @return The FacebookAccount's friend page
      */
     public String getFriendsPageURL() {
@@ -214,7 +233,8 @@ public class FacebookAccount {
     }
 
     /**
-     * Gets a list of friends for this account.     
+     * Gets a list of friends for this account.
+     *
      * @return The list of friends
      * @throws IOException If failed to reach Facebook.com
      */
