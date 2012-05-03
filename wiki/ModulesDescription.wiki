@@ -18,3 +18,7 @@ FBPwn modules are:
 - !DumpInfo: Accessable basic info are saved for offline viewing. Same limitations of dump friends applies.
 
 - !DumpWall: Dumps wall posts for offline viewing. Same limitations of dump friends applies.
+
+- !DictionaryBuilder: Builds a dictionary using words from comments under photos and wall posts.
+
+- !CloseFriendsFinder: Finds the victim's close circle of friends by counting number of comments,likes and tags under photos and wall posts with the ability to change the weights of the ranking criteria.
