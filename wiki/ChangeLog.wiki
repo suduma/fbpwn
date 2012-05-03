@@ -1,7 +1,19 @@
 #labels Featured
 = Change log =
 
-Latest version: <Beta - 0.1.7>
+Latest version: <Beta - 0.1.8>
+
+----
+
+*Beta - 0.1.8*
+
++Fixed all Login issues
+
++Added a new module: Dictionary builder
+
++Added a new module: close friends finder
+
++Added option to group dumped information by victim's ID
 
 ----
 
