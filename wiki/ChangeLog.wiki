@@ -11,9 +11,9 @@ Latest version: <Beta - 0.1.8>
 
 +Added a new module: Dictionary builder
 
-+Added a new module: close friends finder
++Added a new module: Close friends finder
 
-+Added option to group dumped information by victim's ID
++Added an option to group dumped information by victim's ID
 
 ----
 
