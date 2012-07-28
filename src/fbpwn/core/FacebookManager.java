@@ -110,7 +110,7 @@ public class FacebookManager {
 	textField2.setValueAttribute(userPassword);
 	HtmlPage homePage = button.click();
 	String homePageAsText = homePage.asText();
-	if (!homePageAsText.contains("News Feed")) {
+	if (!homePageAsText.contains("News Feed") && !homePage.getTitleText().equals("Find Friends")) {
 
 	    throw new FacebookException(homePage, "Error occured while logging in");
 	}
@@ -281,7 +281,8 @@ public class FacebookManager {
 	allClasses.add(ProfileClonerTask.class);
 	allClasses.add(DictionaryBuilderTask.class);
 	allClasses.add(CloseCircleFriendsTask.class);
-	//allClasses.add(MobileDeviceReconTask.class);
+
+	//allClasses.add(MobileDeviceReconTask.class); //Unstable still under development
 	try {
 	    Class<?> myclass = null;
 	    File Directory = new File(
