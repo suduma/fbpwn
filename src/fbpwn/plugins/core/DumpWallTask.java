@@ -22,6 +22,7 @@ package fbpwn.plugins.core;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import fbpwn.core.AuthenticatedAccount;
 import fbpwn.core.FacebookAccount;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -43,6 +45,7 @@ public class DumpWallTask extends FacebookTask {
 
     /**
      * Creates a wall dumper task
+     *
      * @param FacebookGUI The GUI used for updating the task's progress
      * @param facebookProfile The victim's profile
      * @param authenticatedProfile The attacker's profile
@@ -97,7 +100,45 @@ public class DumpWallTask extends FacebookTask {
                 wallWriter.println(VictimWallPage.getElementsByTagName("head").get(0).asXml());
                 int index = 0;
                 while (index != wallPagesNumber) {
-                    wallWriter.print(VictimWallPage.getElementById("m_stream_stories").asXml().replace("See More Posts", "Page " + (index + 1)));
+
+                  
+                    try {
+                          //Expand and dump "See more" wall posts
+                        List<HtmlAnchor> anchors = VictimWallPage.getAnchors();
+                        for (HtmlAnchor anchor : anchors) {
+                            if (anchor.getTextContent().equals("See More")) {
+                                HtmlPage click = anchor.click();
+
+                                try {
+                                    wallWriter.print(click.getElementById("root").asXml());
+                                    wallWriter.println("<hr>");
+                                } catch (Exception ex) {
+                                    // Will occur if element is not found
+                                    // Exception is Safe to ignore
+                                }
+                            }
+                        }
+                    } catch (Exception ex) {
+                        // Will occur if failed to get an anchor with see more
+                        // Exception is Safe to ignore
+                    }
+
+                    // Dump whole pages
+                    try {
+                        wallWriter.print(VictimWallPage.getElementById("m_stream_stories").asXml().replace("See More Posts", "Page " + (index + 1)));
+                    } catch (Exception ex) {
+                        // Will occur if element is not found
+                        // Exception is Safe to ignore
+                    }
+                    wallWriter.println("<hr>");
+                    try {
+                        wallWriter.print(VictimWallPage.getElementById("structured_composer_async_container").asXml().replace("See More Posts", "Page " + (index + 1)));
+                    } catch (Exception ex) {
+                        // Will occur if element is not found
+                        // Exception is Safe to ignore
+                    }
+
+
                     wallWriter.println("<hr>");
                     try {
                         VictimWallPage = VictimWallPage.getAnchorByText("See More Posts").click();

@@ -32,6 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -147,7 +148,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     AuthenticatedAccount authenticatedProfile = null;
 
     final LoadingDialog loadingDialog =
-            new LoadingDialog(null, true, "Attempting to login ...");
+            new LoadingDialog((JFrame)getParent(), true, "Attempting to login ...");
 
     SwingWorker backgrn = new SwingWorker() {
 
